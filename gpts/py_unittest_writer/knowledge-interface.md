@@ -1,14 +1,14 @@
-PYUNITTESTWRITE — INTERFACE TESTING
-
-PURPOSE
+### PURPOSE
 This document defines the canonical approach for interface (façade-level) tests using unittest.
+
 Interface tests here are integration-style tests: they execute the public callable with real, representative data and real collaborating components, while still keeping assertions limited to interface-level contracts.
 
-SCOPE
+### SCOPE
 Use this guidance only when the unit under test is intended to be an interface/façade surface.
+
 If the provided code is not clearly an interface/façade, follow the core unit-test instructions instead.
 
-CORE PRINCIPLE
+### CORE PRINCIPLE
 Interface tests verify only interface-level contracts:
 
 1. The callable exists and is reachable from the intended public import path.
@@ -17,7 +17,7 @@ Interface tests verify only interface-level contracts:
 4. The return type matches the documented or evidenced contract.
 5. Raise behavior is tested only when the callable itself explicitly raises (or the public contract explicitly requires a raise path).
 
-INTERFACE TESTS MUST
+### INTERFACE TESTS MUST
 
 1. Use unittest only.
 2. Treat each public function OR public method as an independent unit of work.
@@ -25,18 +25,12 @@ INTERFACE TESTS MUST
 4. Provide test methods focused on interface-level behavior:
    a) Happy-path test method
    b) Raise-path test method (only when allowed; otherwise do not include it)
-5. Use Arrange–Act–Assert markers as inline comments:
-
-   # ARRANGE
-
-   # ACT
-
-   # ASSERT
-6. Wrap all assertions in self.subTest().
+5. Use Arrange–Act–Assert markers as inline comments: `# ARRANGE`, `# ACT`, and `# ASSERT`
+6. Wrap all assertions in `self.subTest()`.
 7. Keep assertions limited to reachability/callability, invocation success/failure per contract, and return type.
 8. Use fixtures via setUp and tearDown when the callable requires real resources or real data.
 
-INTEGRATION-STYLE FIXTURE REQUIREMENTS
+### INTEGRATION-STYLE FIXTURE REQUIREMENTS
 
 1. Prefer real collaborating components over mocks.
 2. Use real, representative data (not placeholders) consistent with the contract.
@@ -48,7 +42,7 @@ INTEGRATION-STYLE FIXTURE REQUIREMENTS
 6. If real resources are used (files, directories, sockets, temp locations), they must be created in setUp and removed in tearDown.
 7. If the required fixture data or environment cannot be created deterministically from what is provided, stop and request the missing fixture files or supporting modules.
 
-INTERFACE TESTS MUST NOT
+### INTERFACE TESTS MUST NOT
 
 1. Re-test internal logic, transformation details, or algorithmic correctness.
 2. Assert deep field-level values, ordering, or exact contents.
@@ -56,81 +50,46 @@ INTERFACE TESTS MUST NOT
 4. Patch internal logic to force coverage.
 5. Patch unless strictly necessary to control an external nondeterministic dependency already used by the callable.
 
-TEST CLASS AND METHOD NAMING (MANDATORY)
-A) One callable per test class
+### TEST CLASS AND METHOD NAMING (MANDATORY)
 
-* For a public FUNCTION named <function_name>:
-  Test class name: Test<function_name>
-* For a public CLASS METHOD named <method_name> on class <ClassName>:
-  Test class name: Test<ClassName><method_name>
-  Rationale: method names are not globally unique; include the owning class. No underscore is permitted between class name and method name.
+One callable per test class
+* For a public FUNCTION named <function_name>: Test class name: Test<function_name>
+* For a public CLASS METHOD named <method_name> on class <ClassName>:Test class name: Test<ClassName><method_name>. Rationale: method names are not globally unique; include the owning class. No underscore is permitted between class name and method name.
 
-B) Happy-path test method name
+### ASSERTION SCOPE (MANDATORY)
 
-* test_happy_path
-
-C) Raise-path test method name
-
-* test_raises
-
-DOCSTRINGS (MANDATORY)
-A) Test class docstring
-
-* Exactly one sentence.
-* Must start with: Unit tests
-* Must include verify or verifying.
-* Must describe only the interface responsibility (no implementation details).
-
-B) Test method docstrings
-
-* Required for each test method.
-* Must start with: Should
-* Describe the expected interface-level behavior.
-
-ASSERTION SCOPE (MANDATORY)
 Happy path assertions must include, at minimum:
 
 1. Existence/reachability and callability check
-
 * For functions: verify getattr(module, name, None) is callable
 * For methods: verify getattr(class_or_instance, name, None) is callable
 
 2. Return value assertion (assert return value first)
-
 * If contract returns None: assert is None
 * Otherwise: assert return type only using assertIsInstance or type equality
 
-CONSTRUCTOR / INSTANTIATION HANDLING (CLASS METHODS)
-If the unit under test is an instance method and an instance is required:
+### CONSTRUCTOR / INSTANTIATION HANDLING (CLASS METHODS)
 
+If the unit under test is an instance method and an instance is required:
 1. Instantiate the class using realistic minimal known-good inputs evidenced by the code.
 2. Assert instance type only (isinstance).
 3. Invoke the method and assert return type only.
    Do not assert internal state, fields, or side effects unless explicitly observable and explicitly part of the interface contract.
 
-CUSTOM OBJECT RETURNS (RESTRICTED)
+### CUSTOM OBJECT RETURNS (RESTRICTED)
+
 If the callable returns a custom object:
 
 1. Always assert the returned object type.
 2. Do not compare fields unless the interface contract explicitly requires field-level verification.
-3. If the contract explicitly requires field-level verification, compare only the required fields, one subTest per field.
-   If unclear, type assertion only.
+3. If the contract explicitly requires field-level verification, compare only the required fields, one subTest per field. If unclear, type assertion only.
 
-RAISE TESTS (WHEN ALLOWED)
-Raise-test structure, capture mechanics, assertion format, and subTest naming are governed exclusively by the UNITTEST RAISE TEST STYLE GUIDE.
-This document defines only when a raise test is permitted in interface mode.
-If the raise behavior is not explicit in the callable or contract, do not include a raise test.
-
-PATCHING
-All patching rules, target resolution requirements, and failure-mode constraints are governed exclusively by the Patching Guidance knowledge file.
-Interface tests should avoid patching unless strictly required by an external nondeterministic dependency already used by the callable.
-
-ORDERING WITHIN EACH TEST CLASS
+### ORDERING WITHIN EACH TEST CLASS
 
 1. test_happy_path
 2. test_raises (only when allowed)
 
-MINIMAL CANONICAL PATTERNS
+### MINIMAL CANONICAL PATTERNS
 
 PATTERN 1 — FUNCTION INTERFACE (HAPPY PATH)
 
@@ -151,7 +110,7 @@ PATTERN 3 — RAISE TEST (ONLY WHEN ALLOWED)
 * Use the Raise Style Guide capture-and-assert pattern
 * Trigger the raise condition using realistic inputs consistent with the signature
 
-QUICK COMPLIANCE CHECKLIST
+### QUICK COMPLIANCE CHECKLIST
 
 * unittest only
 * One test class per callable
@@ -161,5 +120,3 @@ QUICK COMPLIANCE CHECKLIST
 * All assertions wrapped in self.subTest
 * No deep correctness assertions
 * No internal implementation coupling
-
-END OF DOCUMENT

@@ -1,12 +1,10 @@
-# Python Module Header Docstring — Knowledge Reference
+### Python Code Module Header Docstring — Knowledge File
 
 This file defines canonical structure, formatting, and examples for generating module-level header docstrings for Python source files.
 
 This file is authoritative. If conflicts arise, this file takes precedence over inferred conventions or external standards.
 
----
-
-## Canonical Docstring Structure
+### Docstring Structure
 
 A valid module-level header docstring MUST follow this structure exactly,
 with one blank line between sections and no wrapped lines.
@@ -24,9 +22,7 @@ Immediately after the closing docstring, the module must declare:
 
 __all__ = []
 
----
-
-## Description Section
+### Description Section
 
 Rules:
 - First line: one concise summary sentence.
@@ -35,17 +31,15 @@ Rules:
 - No implementation details.
 
 Example:
-
+```
 """
 Utility functions for sanitizing and normalizing text inputs.
 
-This module provides reusable helpers for cleaning, normalizing, and preparing
-raw text data for downstream processing pipelines.
+This module provides reusable helpers for cleaning, normalizing, and preparing raw text data for downstream processing pipelines.
 """
+```
 
----
-
-## Key Responsibilities Section
+### Key Responsibilities Section
 
 Rules:
 - Bullet list only.
@@ -55,12 +49,11 @@ Rules:
 - No speculation.
 
 Example:
-
+```
 Key Responsibilities:
 	- Remove non-printable or control characters from input text
 	- Normalize whitespace for consistent downstream processing
-
----
+```
 
 ## Example Usage Section
 
@@ -70,8 +63,8 @@ Rules:
 - No additional explanation text.
 - Single-tab indentation.
 
-If module is public:
-
+Example:
+```
 Example Usage:
 	# Preferred usage via public package interface:
 	from package import api
@@ -80,14 +73,12 @@ Example Usage:
 	# Direct module usage (acceptable in unit tests or internal scripts only):
 	import package._internal_module as internal
 	result = internal.process_text(raw_text)
+```
 
-If module is private and no public interface exists, replace the first example with:
+For private modules, identified by module name starting with an underscore, replace the preferred usage via public package interface example with ```"Not applicable. This is an internal module and should be accessed via a façade when exposed."```
 
-	Not applicable. This is an internal module and should be accessed via a façade when exposed.
 
----
-
-## Dependencies Section
+### Dependencies Section
 
 Rules:
 - Bullet list only.
@@ -95,14 +86,13 @@ Rules:
 - List only what is directly imported or implied by syntax.
 
 Example:
-
+```
 Dependencies:
 	- Python version: >= 3.9
 	- Standard Library: re, string
+```
 
----
-
-## Notes Section
+### Notes Section
 
 Rules:
 - Bullet list only.
@@ -111,27 +101,25 @@ Rules:
 - No recommendations unless required for correctness.
 
 Example:
-
+```
 Notes:
 	- Intended for internal use within text processing utilities
 	- Separates text cleanup from structural parsing concerns
+```
 
----
-
-## License Section
+### License Section
 
 Rules:
 - Must be labeled exactly as shown.
 - No additional text beyond the bullet.
 
 Example:
-
+```
 License:
 	- Internal Use Only
+```
 
----
-
-## Stable Docstring Criteria
+### Stable Docstring Criteria
 
 A docstring is considered stable if:
 - All required sections are present and ordered correctly
@@ -145,10 +133,8 @@ The only allowed response in this case is:
 
 No update needed. Existing docstring is stable and compliant.
 
----
-
-## Canonical Full Example
-
+### Full Example
+```
 """
 Utility functions for sanitizing and normalizing text inputs.
 
@@ -165,7 +151,7 @@ Example Usage:
 	clean = utils.remove_all_whitespace(raw_text)
 
 	# Direct module usage (acceptable in unit tests or internal scripts only):
-	import src.utils._text_sanitizer as sanitizer
+	import src.utils.text_sanitizer as sanitizer
 	clean = sanitizer.remove_all_whitespace(raw_text)
 
 Dependencies:
@@ -180,3 +166,4 @@ License:
 	- Internal Use Only
 """
 __all__ = []
+```

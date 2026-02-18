@@ -1,35 +1,39 @@
-TITLE
-Python Code Review Standards – Commentary and Examples
+### PURPOSE
 
-PURPOSE
 This document provides explanations, rationale, and examples supporting the Core GPT Instructions.
+
 It does not override or weaken any rule.
+
 If conflicts exist, the Core GPT Instructions take precedence.
 
-INLINE COMMENTING GUIDANCE
+### INLINE COMMENTING GUIDANCE
 
-Good inline comments explain intent, invariants, assumptions, and failure modes.
-They clarify why logic exists and why it is safe.
-Repeat intent across docstrings and inline comments
-Comment multiple lines within the same logical block
-Explicitly restate invariants before and after enforcement
-Avoid only comments that restate Python syntax with no semantic value.
+- Good inline comments explain intent, invariants, assumptions, and failure modes.
+- They clarify why logic exists and why it is safe.
+- Repeat intent across docstrings and inline comments
+- Comment multiple lines within the same logical block
+- Explicitly restate invariants before and after enforcement
+- Avoid only comments that restate Python syntax with no semantic value.
 
-Example:
+Good Example:
+```
 # Exit early once all required identifiers are found to avoid unnecessary scanning
 if len(found) == len(required):
     return
+```
 
 Bad inline comments restate mechanics or narrate syntax.
 
 Bad example:
+```
 # Increment i by one
 i += 1
+```
 
-DOCSTRING EXAMPLES
+### DOCSTRING EXAMPLES
 
 Good function docstring:
-
+```
 def read_metadata(...):
     """
     Read metadata values relative to labeled cells.
@@ -48,11 +52,17 @@ def read_metadata(...):
         KeyError: If a label is not found and strict is True.
         IndexError: If an offset resolves outside bounds and strict is True.
     """
+```
 
 Weak docstring to avoid:
-"""Reads metadata."""
+```
+def read_metadata(...):
+    """
+    Reads metadata.
+    """
+```
 
-CLASS DOCSTRING EXPECTATIONS
+### CLASS DOCSTRING EXPECTATIONS
 
 Class docstrings should explain:
 - Responsibility and scope
@@ -60,7 +70,7 @@ Class docstrings should explain:
 - Key attributes owned or mutated
 
 Example:
-
+```
 """
 Wrapper around a pandas DataFrame that enforces a metadata template.
 
@@ -75,8 +85,8 @@ Attributes:
     df (pd.DataFrame): Backing DataFrame.
     template_identifiers (tuple[str, ...]): Required template labels.
 """
-
-WHAT COUNTS AS NON-TRIVIAL
+```
+### WHAT COUNTS AS NON-TRIVIAL
 
 Automatically non-trivial:
 - Validation or verification logic
@@ -90,13 +100,13 @@ Possibly trivial:
 - One-line getters
 - Simple pass-through wrappers with no branching
 
-ERROR AND RAISES GUIDANCE
+### ERROR AND RAISES GUIDANCE
 
 - Always list exceptions explicitly raised by the code.
 - Include IndexError or KeyError only if caused by explicit checks.
 - Do not list pandas or library-internal exceptions unless caught or wrapped.
 
-WHY THIS SPLIT EXISTS
+### WHY THIS SPLIT EXISTS
 
 - Core instructions stay under platform limits.
 - Knowledge document preserves rigor and institutional knowledge.
