@@ -53,20 +53,25 @@ Interface tests verify only interface-level contracts:
 ### TEST CLASS AND METHOD NAMING (MANDATORY)
 
 One callable per test class
-* For a public FUNCTION named <function_name>: Test class name: Test<function_name>
+
+* For a public FUNCTION named <function_name>:
+  Test class name: Test<PascalCase(function_name)>
+
+  Where:
+  - function_name is converted from snake_case to PascalCase
+  - Underscores are removed
+  - Each word is capitalized
+
+  Example: function name `get_board_supplier_codes_lookup_table` will result in a class name `TestGetBoardSupplierCodesLookupTable`
+
 * For a public CLASS METHOD named <method_name> on class <ClassName>:Test class name: Test<ClassName><method_name>. Rationale: method names are not globally unique; include the owning class. No underscore is permitted between class name and method name.
 
 ### ASSERTION SCOPE (MANDATORY)
 
-Happy path assertions must include, at minimum:
+Happy path tests must directly invoke the callable via its public import path.
 
-1. Existence/reachability and callability check
-* For functions: verify getattr(module, name, None) is callable
-* For methods: verify getattr(class_or_instance, name, None) is callable
+If the callable is missing or not callable, the test failure is sufficient.
 
-2. Return value assertion (assert return value first)
-* If contract returns None: assert is None
-* Otherwise: assert return type only using assertIsInstance or type equality
 
 ### CONSTRUCTOR / INSTANTIATION HANDLING (CLASS METHODS)
 
