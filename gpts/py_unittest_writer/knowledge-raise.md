@@ -35,10 +35,18 @@ Assert the exception type name (REQUIRED)
 - actual_type = type(actual).__name__
 - Assert equality using a subTest
 
-Assert message presence only (REQUIRED)
-- Extract args using `actual_args = getattr(actual, "args", ())`
-- Assert `bool(actual_args) and str(actual_args[0]) != ""`
-- Never assert exact message text
+Assert message presence (REQUIRED)
+
+- Extract args using: `actual_args = getattr(actual, "args", ())`
+- Assert message is non-empty: `bool(actual_args) and str(actual_args[0]) != ""`
+
+Reason preservation (CONDITIONAL)
+
+- When the unit under test wraps or normalizes an underlying exception,
+  assert that the underlying reason string is preserved using assertIn.
+- Do not assert exact message equality.
+- Do not assert full formatted string equality.
+- Do not require reason containment when no wrapped exception exists.
 
 Raise tests must follow the global assertion-wrapping requirement (all assertions in subTest) and, in addition, must use the subTest names and Exp/Act fields specified in this guide.
 
@@ -58,6 +66,7 @@ Use this exact pattern. Only variable names may change.
         # ARRANGE
         <setup>
         expected_type = <ExceptionClass>.__name__
+        expected_reason: str | None = ... # Only set when unit under test wraps/normalizes an underlying exception
 
         # ACT
         try:
@@ -75,24 +84,36 @@ Use this exact pattern. Only variable names may change.
         with self.subTest("Message string is not empty"):
             self.assertTrue(bool(actual_args) and str(actual_args[0]) != "")
 
+        # Optional: include only when expected_reason is set (unit wraps/normalizes an underlying exception)
+        if expected_reason is not None:
+            actual_message = str(actual)
+            with self.subTest("Message contains reason"):
+                self.assertIn(expected_reason, actual_message)
+
+
 ### SUBTEST OUTPUT REQUIREMENTS
-- Exception type comparison subTest name MUST be exactly:
-  "Error"
+- Exception type comparison subTest name MUST be exactly: "Error"
 - Exp and Act parameters MUST be provided
-- Message presence subTest name MUST be exactly:
-  "Message string is not empty"
+- Message presence subTest name MUST be exactly: "Message string is not empty"
+- Reason containment subTest name MUST be exactly: "Message contains reason"
+- For "Message contains reason", Exp and Act SHOULD be provided when expected_reason is available
 
 ### FORBIDDEN PRACTICES
 - Using assertRaises or assertRaisesRegex
 - Catching a specific exception type in except
 - Asserting exact exception messages
-- Asserting repr(exception) or str(exception) content
+- Asserting repr(exception) or str(exception) content, except for the conditional “reason containment” assertion which MUST use assertIn and MUST NOT use exact equality
 - Omitting actual = "" when no exception is raised
 - Renaming or omitting Arrange–Act–Assert markers
 - Combining multiple exception types in one test without subTest grouping
 
 ### MINIMUM ASSERTION REQUIREMENTS
+
 A compliant raise test MUST:
 - Assert exception type name equality
-- Assert exception message presence only (non-empty)
+- Assert exception message presence (non-empty)
+
+Additionally:
+- Assert reason containment when the unit under test wraps or normalizes an underlying exception.
+
 
