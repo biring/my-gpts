@@ -1,0 +1,79 @@
+### PURPOSE [CORE]
+
+This document defines the canonical list of EE disciplines used by the pcba_discipline_classifier GPT and the method for assigning a BOM component to one of those disciplines. It covers what each discipline means and how to look up an unfamiliar component to determine its correct discipline.
+
+This document supplements the Core GPT Instructions with discipline-definition-specific rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.
+
+
+### SCOPE [CORE]
+
+__Applies to:__ ICs and active modules in the CBOM (microcontrollers, power management ICs, transceivers, op-amps, memory chips, sensor ICs, driver ICs, RF modules, etc.).
+
+__Does not apply to:__ Passives (resistors, capacitors, inductors), connectors, ESD components, TVS diodes, fuses, bare LEDs, crystals, test points, mechanical parts, bare PCB, labor, or freight — ignore these entirely; do not classify, flag, or report them. They are never Unknown. Output format and Unknown item handling are covered in knowledge-output.md.
+
+
+### RULES [CORE]
+
+1. Scan every CBOM line item and identify ICs and active modules; ignore everything else (see SCOPE above).
+2. Assign each IC or active module to exactly one discipline from the table below.
+3. To identify an unfamiliar IC, use the component's **Description**, **Manufacturer Part Number (MPN)**, and **Part Number Description** as search inputs.
+4. Look up the component on the internet (datasheet, distributor product page, or manufacturer page) to confirm its function and application category.
+5. Match the confirmed function to the best-fitting discipline in the EE Domain Table below.
+6. Discipline names must be used exactly as written in the table — do not paraphrase or abbreviate.
+7. Record the component's reference designator (ref des, e.g. U1, U3) alongside its assigned discipline. If the CBOM does not include a ref des column, use the MPN instead.
+
+
+### FORBIDDEN PRACTICES [CORE]
+
+- Do not classify passives, connectors, ESD components, or any non-IC discrete part — ignore them entirely.
+- Do not classify an IC without first checking its description or MPN; do not guess from the manufacturer name alone.
+- Do not create a discipline not listed in the EE Domain Table below.
+- Do not assign an IC to a discipline based on where it appears in the schematic if its description or datasheet clearly indicates a different primary function.
+
+
+### EE DOMAIN TABLE [CORE]
+
+| EE Domain | Scope / Examples |
+|---|---|
+| AC Power | Mains input, AC-DC SMPS, transformers, isolation, PFC, EMI filters |
+| DC Power | Buck, Boost, Buck-Boost, LDO, power sequencing |
+| Battery Systems | Li-Ion/LiPo, LiFePO4, NiMH, Lead Acid — cell/pack specs, BMS design, cell balancing, state-of-charge/state-of-health estimation, charger ICs, protection circuits (OVP, OCP, thermal), PMICs, hot swap controllers, power path management |
+| High Voltage Design | HV power supplies, HV switching, insulation coordination, corona/arcing prevention, safe discharge circuits, multiplier stacks — applications include electron microscopes (up to 300 kV), mass spec ion optics, laser power supplies, X-ray generators |
+| Motor Control & Actuation | Relays, DC motors, BLDC, stepper motors, AC motors, Peltiers, solenoids, linear actuators, H-bridges, inverters, precision thermal control (PID heater drivers, thermocycler design, cryogenic systems, thermal modeling) |
+| Sensors | Temperature, pressure, proximity, optical, IMU, current/voltage sensing, Hall effect, load cells |
+| Microcontrollers / MPUs / SoC | Part selection, pinout, peripherals (ADC, timers, PWM), ARM cores, RTOS integration, storage interfaces including SPI/OSPI NOR/NAND flash, eMMC, SD/SDIO cards, wear leveling, file systems (FAT, LittleFS) |
+| FPGA / Programmable Logic | RTL design, timing closure, SERDES, hardware acceleration, IP cores |
+| Low-Speed Communication | I2C, SPI, UART, CAN, LIN, SMBus |
+| High-Speed Communication | USB, Ethernet, PCIe, LVDS, MIPI |
+| Analog Design | Op-amps, comparators, active filters, ADC/DAC interfacing, references, noise analysis |
+| Precision Signal Acquisition | Transimpedance amplifiers, lock-in amplifiers, PMT/APD biasing and readout, ionization detector front-ends, precision ADC signal chains, noise floor management — applications include spectroscopy, flow cytometry, mass spec detectors |
+| Digital Design | Logic gates, flip-flops, state machines, timing analysis |
+| RF Design | Impedance matching, antennas, transmission lines, RF front-end, LNAs, PAs, RF filters |
+| Wireless Communication | Wi-Fi, Bluetooth, Zigbee, LoRa, cellular, protocol stacks, certification |
+| Embedded Firmware | Drivers, BSP, RTOS, middleware, communication stacks, bootloaders, power management |
+| User Interfaces | Touch panels, LCD/TFT, LEDs, buttons, rotary encoders |
+
+
+### EXAMPLE 1 [CORE]
+
+**Component:** Description = "BLE 5.0 transceiver SoC", MPN = nRF52840-QIAA, Mfg = Nordic Semiconductor
+
+1. Search "nRF52840-QIAA" → Nordic product page confirms: Bluetooth 5.0 SoC with integrated ARM Cortex-M4 MCU.
+2. Primary function is wireless communication (BLE); the MCU core is embedded, not the reason this part was selected.
+3. Assign to: **Wireless Communication**
+
+**Component:** Description = "Gate driver, dual, 4 A", MPN = UCC27524APDR, Mfg = Texas Instruments
+
+1. Search "UCC27524APDR" → TI datasheet confirms: dual 4 A sink/source gate driver, used to drive power MOSFETs in switching converters.
+2. Primary function is driving FETs in a DC-DC power stage.
+3. Assign to: **DC Power**
+
+
+### CHECKLIST [CORE]
+
+Before finalizing a component's discipline assignment, confirm:
+
+- The component's MPN or description was looked up — classification is not based on guesswork.
+- The assigned discipline name matches exactly as written in the EE Domain Table.
+- The component's primary function (not its location in the schematic) drove the assignment.
+- The component's ref des (or MPN if ref des unavailable) has been recorded for the Source column.

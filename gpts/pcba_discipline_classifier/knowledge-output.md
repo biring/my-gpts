@@ -1,0 +1,107 @@
+### PURPOSE [CORE]
+
+This document defines how to produce the classification output for the pcba_discipline_classifier GPT. It takes the EE discipline assigned to each active component in the CBOM (per knowledge-disciplines.md) and produces a summary table showing which disciplines are present, their component count, relative weight, and the ref des of contributing components.
+
+This document supplements the Core GPT Instructions with output-format rules. It does not define how to assign a discipline — that is covered in knowledge-disciplines.md. Where this document conflicts with the Instructions, the Instructions take precedence.
+
+
+### SCOPE [CORE]
+
+__Applies to:__ ICs and active modules identified in the CBOM.
+
+__Does not apply to:__ Passives (resistors, capacitors, inductors), connectors, ESD components, TVS diodes, fuses, bare LEDs, crystals, test points, mechanical parts, bare PCB, labor, or freight. These are ignored entirely — do not classify, flag, or include them in any output section, including Unknown.
+
+
+### OUTPUT FORMAT [CORE]
+
+Produce a Markdown table with the following columns, in this order:
+
+**EE Domain | Count | Weight (%) | Source**
+
+- **EE Domain** — domain name exactly as written in knowledge-disciplines.md, in the same order.
+- **Count** — number of active components assigned to this domain.
+- **Weight (%)** — (domain count ÷ total classified active components) × 100, rounded to 1 decimal place. Domains with Count = 0 show Weight = —. Unknown items are excluded from the denominator.
+- **Source** — comma-separated ref des of components assigned to this domain (e.g. U1, U3, U7). If the CBOM has no ref des column, list MPNs instead. Domains with Count = 0 show Source = —.
+
+Omit rows where Count = 0 — only show domains that are present.
+
+Add a **Total row** at the bottom showing the sum of all classified active components.
+
+If any active components could not be classified, add an **Unknown** row above the Total row with Count, Weight (%), and Source filled in.
+
+**Below the table**, add a one-line methodology note:
+> _Domains determined by identifying ICs and active modules in the CBOM, looking up each component by MPN or description, and matching its primary function to the EE domain table in knowledge-disciplines.md._
+
+**If no active components are found**, do not produce a table. Instead output:
+> No EE domain detected — this may be a passive-only or simple mechanical assembly.
+
+
+### FORBIDDEN PRACTICES [CORE]
+
+- Do not classify passives, connectors, ESD components, or any non-IC discrete parts — ignore them entirely.
+- Do not add a domain not listed in knowledge-disciplines.md.
+- Do not include rows with Count = 0 in the output table.
+
+
+### UNKNOWN COMPONENTS [CORE]
+
+Unknown applies only to active components (ICs and active modules) that were identified but could not be assigned to any discipline. Passives, mechanical parts, bare PCB, labor, and freight are ignored — they are never Unknown.
+
+If one or more active components cannot be classified:
+- Add an **Unknown** row above the Total row in the table (Count, Weight %, Source filled in).
+- After the methodology note, append an **Unknown Items** section listing each as a bullet:
+  `Ref Des / MPN — reason — recommended new domain (if applicable)`
+- If 3 or more Unknown components share a common function, recommend a new domain name to add to knowledge-disciplines.md.
+
+
+### EXAMPLE 1 [CORE]
+
+Input CBOM (15 line items, 6 are active components):
+
+| Ref Des | Description | Mfg Name | MPN |
+|---|---|---|---|
+| U1 | 32-bit MCU, ARM Cortex-M4 | STMicroelectronics | STM32F407VGT6 |
+| U2 | 512 Mbit NOR Flash | Winbond | W25Q512JVFIQ |
+| U3 | BLE 5.0 transceiver SoC | Nordic Semiconductor | nRF52840-QIAA |
+| U4 | LDO regulator, 3.3 V 500 mA | Texas Instruments | TPS7A0533PDBVR |
+| U5 | Op-amp, precision, single | Texas Instruments | OPA2277UA |
+| U6 | CAN transceiver, 5 V | Microchip | MCP2562-E/SN |
+
+Ignored (non-active): chip antenna, power inductor, crystal, TVS diode, ESD array, LED, resistor, capacitor, header.
+
+Output:
+
+| EE Domain | Count | Weight (%) | Source |
+|---|---|---|---|
+| DC Power | 1 | 16.7% | U4 |
+| Microcontrollers / MPUs / SoC | 2 | 33.3% | U1, U2 |
+| Low-Speed Communication | 1 | 16.7% | U6 |
+| Analog Design | 1 | 16.7% | U5 |
+| Wireless Communication | 1 | 16.7% | U3 |
+| **Total** | **6** | **100.0%** | |
+
+_Domains determined by identifying ICs and active modules in the CBOM, looking up each component by MPN or description, and matching its primary function to the EE domain table in knowledge-disciplines.md._
+
+Unknown Items: None.
+
+Classification notes:
+- U1 STM32F407VGT6 → Microcontrollers / MPUs / SoC
+- U2 W25Q512JVFIQ (NOR Flash — within MCU storage scope per knowledge-disciplines.md) → Microcontrollers / MPUs / SoC
+- U3 nRF52840-QIAA (BLE SoC) → Wireless Communication
+- U4 TPS7A0533PDBVR (LDO) → DC Power
+- U5 OPA2277UA (op-amp) → Analog Design
+- U6 MCP2562-E/SN (CAN transceiver) → Low-Speed Communication
+
+
+### CHECKLIST [CORE]
+
+Before finalizing output, confirm:
+
+- Only active components were classified — passives and non-IC discretes were ignored.
+- Only domains with Count > 0 appear in the table.
+- No domain outside knowledge-disciplines.md appears in the table.
+- Weight (%) values across all classified domains sum to 100% (±0.1%).
+- Unknown row (if any) appears directly above the Total row.
+- Every Unknown component has a reason listed; recommend a new domain if 3 or more share a function.
+- Methodology note appears below the table.
+- If no active components found, the no-domain message is used instead of a table.
