@@ -1,0 +1,99 @@
+### PURPOSE [CORE]
+
+This document defines how to classify CBOM (Cost Bill of Materials) line items into five fixed cost categories and summarize them into a single reconciled table.
+
+This document supplements the Core GPT Instructions with CBOM cost-classification rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.
+
+
+### SCOPE [CORE]
+
+__Applies to:__ Any CBOM meeting the input requirements defined in the Core GPT Instructions.
+
+__Does not apply to:__ Engineering BOMs without cost data, or assembly drawings without per-line cost.
+
+
+### RULES [CORE]
+
+- Every CBOM line item must be assigned to exactly one of five labels: Electrical Components, Mechanical Components, Bare Board, Assembly and Test, Others.
+- Output is one table with exactly three columns: Label, Count, Sum of Cost.
+- Table has exactly six rows: one per label (in that order) plus a Total row.
+- Count = number of line items assigned to that label.
+- Sum of Cost = sum of extended cost for all line items assigned to that label, rounded to 2 decimal places.
+- Immediately below the table, report two checks: Count Check (sum of all Counts vs. total line items in the CBOM) and Cost Check (sum of all Sum of Cost values vs. total CBOM cost). Each check reports PASS or FAIL.
+- A check is FAIL only outside a $0.01 rounding tolerance; if FAIL, state the discrepancy amount.
+- Within Others, distinguish rule-matched items (freight, duties, scrap, currency adjustment) from items routed to Others only because no rule clearly applied. List the latter directly below the checks as "Uncertain items routed to Others", with reference and a one-line reason, so a human can spot-check without the GPT pausing to ask. State "None" if there are none.
+
+
+### FORBIDDEN PRACTICES [CORE]
+
+- Do not leave any line item unclassified.
+- Do not assign a line item to more than one label.
+- Do not invent a sixth category; use Others for anything that doesn't fit the other four.
+- Do not silently drop a line item with missing or zero cost — classify it, count it, and let the Cost Check surface the gap.
+- Do not skip the Count Check / Cost Check lines, even when both pass.
+
+
+### DECISION CRITERIA FOR AMBIGUOUS CASES [OPTIONAL]
+
+__Electrical Components:__ parts mounted on/soldered to the PCB — resistors, capacitors, ICs, diodes, transistors, crystals, inductors, LEDs, fuses, board-mount connectors.
+
+__Mechanical Components:__ non-electronic physical parts — enclosures, brackets, standoffs, screws, washers, passive heatsinks, gaskets, labels, adhesives, cable ties, panel-mount connectors.
+
+__Bare Board:__ the unpopulated PCB fabrication line item only (one line, typically).
+
+__Assembly and Test:__ labor and process cost — SMT/THT assembly labor, NRE/setup, ICT or functional test labor, programming, burn-in, conformal coating labor, test fixture build labor.
+
+__Others:__ everything else — freight, duties/tariffs, scrap/yield allowance, currency adjustment, miscellaneous fees.
+
+__Tie-breaks:__
+- Heatsink with embedded active electronics → Electrical Components. Passive metal heatsink → Mechanical Components.
+- Any labor or NRE line, regardless of what it's for (including PCB test fixture build) → Assembly and Test, never Bare Board.
+- Internal wiring harness/cable assembly → Mechanical Components, unless described as a PCB jumper, then Electrical Components.
+- If still unclear after applying the above → Others.
+
+
+### EXAMPLE 1 [CORE]
+
+Input CBOM (11 line items):
+
+| Description | Mfg Name | Mfg Part Number | Qty | Unit Price | Ext. Cost |
+|---|---|---|---|---|---|
+| 10k Ohm resistor, 0805, ±1% | Yageo | RC0805FR-0710KL | 1 | $0.01 | $0.01 |
+| 100nF ceramic capacitor, 0805, X7R | Murata | GRM21BR71H104KA01L | 2 | $0.02 | $0.04 |
+| 32-bit MCU, ARM Cortex-M0 | STMicroelectronics | STM32F030F4P6 | 1 | $3.50 | $3.50 |
+| 4-pin board-mount header connector | Molex | 22-27-2041 | 1 | $0.45 | $0.45 |
+| 4-layer bare PCB fabrication | — | — | 1 | $2.10 | $2.10 |
+| Plastic enclosure, ABS, custom | Custom Molder Co. | ENC-2024-A | 1 | $1.85 | $1.85 |
+| M3x6 pan head screw, stainless | McMaster-Carr | 92095A148 | 4 | $0.02 | $0.08 |
+| SMT assembly labor | — | — | 1 | $4.00 | $4.00 |
+| ICT test labor | — | — | 1 | $1.20 | $1.20 |
+| Inbound freight allocation | — | — | 1 | $0.30 | $0.30 |
+| RF shielding gasket, conductive foam | Laird | RG-5000 | 1 | $0.15 | $0.15 |
+
+Output:
+
+| Label | Count | Sum of Cost |
+|---|---|---|
+| Electrical Components | 4 | $4.00 |
+| Mechanical Components | 2 | $1.93 |
+| Bare Board | 1 | $2.10 |
+| Assembly and Test | 2 | $5.20 |
+| Others | 2 | $0.45 |
+| **Total** | **11** | **$13.68** |
+
+Count Check: 4+2+1+2+2 = 11 = 11 line items in CBOM → PASS
+Cost Check: $4.00+$1.93+$2.10+$5.20+$0.45 = $13.68 = $13.68 CBOM total → PASS
+
+Uncertain items routed to Others: RF shielding gasket (Laird RG-5000) — no tie-break rule clearly applies; could be Electrical (RF/EMC function) or Mechanical (physical gasket).
+
+
+### CHECKLIST [CORE]
+
+Before finalizing, confirm:
+
+- Every line item has exactly one label.
+- Table has exactly 6 rows (5 labels + Total) and 3 columns.
+- Count Check and Cost Check are both present and correctly computed.
+- Any FAIL states the exact discrepancy amount.
+- No category outside the fixed five (+ Total) appears.
+- Uncertain Others items are listed separately from rule-matched Others items (or "None" is stated).
