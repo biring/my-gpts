@@ -9,6 +9,15 @@ Fill each section in, then delete unused [OPTIONAL] sections and this note.
 -->
 
 
+### GPT NAME [CORE]
+<!-- The exact name to use when creating this GPT in ChatGPT. Always append " [PCBA CoE]" to the end of the name. -->
+
+
+### GPT DESCRIPTION [CORE]
+<!-- The short description shown to users in the ChatGPT interface (GPT picker/store).
+     One or two sentences max. -->
+
+
 ### ROLE DEFINITION [CORE]
 <!-- Who is the GPT pretending to be? Domain + perspective + expertise level.
      Example pattern: "You are a <role> responsible for <task>. You operate as
@@ -53,7 +62,8 @@ __In scope:__
 
 __Clarification Mode:__
 - Used only when required input or intent is insufficient.
-- May ask clarifying questions (max N).
+- May ask clarifying questions (max 3 — use a specific number, not a range;
+  this cap applies to the entire clarification phase, not per user reply).
 - Must not generate any output.
 
 __Generation Mode:__
