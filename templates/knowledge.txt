@@ -1,0 +1,89 @@
+=== TEMPLATE NOTES =================================================
+
+Delete this block when generating a knowledge file.
+
+Scope: this template is for ONE knowledge file that supports ONE instructions.txt. A knowledge file holds domain rules, examples, and edge cases that would push the Instructions field over its character limit. It explains and exemplifies; it does not replace or restate the Instructions field's authority.
+
+Core sections [CORE] apply to every knowledge file. Optional sections [OPTIONAL] apply only in specific situations (noted inline); delete the section if it does not apply.
+
+SECTION ORDER AND WHY:
+  1. PURPOSE                               [CORE]     - context: what, why
+  2. SCOPE                                 [CORE]     - context: when
+  3. RULES                                 [CORE]     - the requirements
+  4. NAMING CONVENTIONS                    [OPTIONAL] - a specific sub-rule
+  5. FORBIDDEN PRACTICES                   [CORE]     - the anti-rules
+  6. DECISION CRITERIA FOR AMBIGUOUS CASES [OPTIONAL] - resolving judgment calls
+  7. NO-OP / STABILITY CRITERIA            [OPTIONAL] - gate before generating
+  8. EXAMPLE 1+                            [CORE]     - what compliant output looks like
+  9. CHECKLIST                             [CORE]     - final self-check
+
+FORMATTING HIERARCHY (plain text, no markdown):
+  SECTION NAME     — top level, ALL CAPS, no prefix
+  Label:           — sub-label, title case + colon
+  - item           — list item under a label or section
+  # Subsection:    — named subsection; use only when a section has three or more named groups; one or two groups use plain Label: instead
+  - item
+  <note>           — authoring instruction or hint; remove entirely when generating a knowledge file
+
+SPACING RULES:
+  2 blank lines before every SECTION NAME
+  No blank line between a section heading and its first content
+  1 blank line before each # subsection
+  No blank line between a Label: or # Subsection: and its dash items
+  1 blank line between plain Labels: within the same section
+
+EXAMPLE may be numbered (EXAMPLE 1, EXAMPLE 2, ...) and repeated as needed. Fill each section in, then delete unused [OPTIONAL] sections and this note.
+=============================================================================
+
+
+PURPOSE [CORE]
+<What does this document define, and what single problem does it solve? If this GPT has more than one knowledge file, state what this file covers and, implicitly, what it does NOT cover (so files stay disjoint).>
+
+<Close this section with the fixed boilerplate sentence below (same wording every time): "This document supplements the Core GPT Instructions with <topic>-specific rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.">
+
+
+SCOPE [CORE]
+<When does this file's guidance apply? Critical when the GPT has multiple knowledge files - state the trigger condition that routes to THIS file specifically (e.g. "only when the unit under test raises an exception", "only when the output is a façade/interface").>
+
+Applies to:
+
+Does not apply to:
+
+
+RULES [CORE]
+<The enforceable content of this file. Each rule is a MUST by default - no "Must:" label needed. Use a flat or numbered list; number items if they need to be referenced elsewhere (e.g. from the checklist). Negative constraints ("do not...") belong in FORBIDDEN PRACTICES below, not here.>
+-
+
+
+NAMING CONVENTIONS [OPTIONAL]
+<Use only when the output requires deterministically derived names (e.g. test class names from function names). Give the exact derivation rule plus one worked example.>
+-
+
+
+FORBIDDEN PRACTICES [CORE]
+<Known anti-patterns specific to this domain. Pair each with the correct alternative when the mistake is non-obvious (e.g. wrong target referenced, wrong scope, mismatched naming).>
+-
+
+
+DECISION CRITERIA FOR AMBIGUOUS CASES [OPTIONAL]
+<Use when classifying input into the categories defined by SCOPE/RULES requires judgment, not just lookup. State what clearly falls on each side, then give the tie-break rule for cases that remain ambiguous after that.>
+-
+
+
+NO-OP / STABILITY CRITERIA [OPTIONAL]
+<Use only when this knowledge file governs updating existing content rather than generating from scratch. List the criteria under which existing content already complies and must NOT be regenerated, plus the exact phrase to output in that case.>
+
+Stable when:
+-
+
+No-op output:
+
+
+EXAMPLE 1 [CORE]
+<One ready-to-copy block that fully satisfies the rules above. Only variable/identifier names should change when reused. Add EXAMPLE 2, EXAMPLE 3, etc. below if more than one distinct example is needed (e.g. one per case the rules cover); a single EXAMPLE is sufficient for most files.>
+
+
+CHECKLIST [CORE]
+<Final self-check before the GPT finalizes output governed by this file. Phrase as direct questions or imperative checks, not a restatement of the rules above.>
+Before finalizing, confirm:
+-
