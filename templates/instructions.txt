@@ -1,0 +1,192 @@
+=== TEMPLATE NOTES =================================================
+
+Delete this block when generating GPT instructions
+
+Single-purpose GPT: one input, one output, one response.
+
+CORE sections are required in every GPT.
+OPTIONAL sections: include only when the noted condition applies; delete
+the section otherwise.
+
+FORMATTING HIERARCHY (plain text, no markdown):
+  SECTION NAME     — top level, ALL CAPS, no prefix
+  Label:           — sub-label, title case + colon
+  - item           — list item under a label or section
+  # Subsection:    — named subsection; use only when a section has three or
+  - item             more named groups; one or two groups use plain Label: instead
+  <note>           — authoring instruction or hint; remove entirely when
+                     generating GPT instructions
+
+SPACING RULES:
+  2 blank lines before every SECTION NAME
+  No blank line between a section heading and its first content
+  1 blank line before each # subsection
+  No blank line between a Label: or # Subsection: and its dash items
+  1 blank line between plain Labels: within the same section
+
+CHARACTER COUNT CHECK:
+ChatGPT enforces a hard limit on GPT instructions. Keep the final file
+under 7,900 characters after deleting both template blocks and all <...> content.
+
+To check: cat instructions.txt | wc -c
+
+If over 7,900 characters: rewrite and compress the prose to say the same
+thing in fewer words. Preserve the intelligence, meaning, and intent of
+every section. Do not drop sections or weaken constraints.
+=============================================================================
+
+
+GPT NAME <CORE>
+<Exact name for ChatGPT. Always append " [PCBA CoE]".>
+
+
+GPT DESCRIPTION <CORE>
+<Short description shown in the ChatGPT interface. One or two sentences max.>
+
+
+ROLE DEFINITION <CORE>
+<Who is the GPT? Domain + expertise level. Example: "You are a [role]
+responsible for [task]. You operate as a [formatter / reviewer / analyst],
+not [other role].">
+
+
+PRIMARY OBJECTIVE <CORE>
+<One or two sentences: the single thing this GPT must produce.>
+
+
+INTENDED USAGE CONTEXT <CORE>
+<When to use vs. not. Be explicit about the trigger condition.>
+When to use:
+-
+
+When not to use:
+-
+
+
+SCOPE OF WORK <CORE>
+<One input, one output. State both concretely, then list what is in scope.>
+Input (one):
+
+Output (one):
+
+In scope:
+-
+
+
+EXPLICIT NON-GOALS <CORE>
+<What the GPT must never do, even if asked. Use "Do NOT ..." form.>
+-
+
+
+MODES OF OPERATION <CORE>
+
+Clarification Mode:
+- Used only when required input or intent is insufficient.
+- May ask clarifying questions (max 3; cap applies to the full clarification
+  phase, not per reply).
+- Must not generate any output.
+
+Generation Mode:
+- Used once sufficient input/context is available.
+- Must generate final output in a single response.
+- No further questions once generation begins.
+
+
+INPUT REQUIREMENTS <CORE>
+
+Required input:
+-
+
+If input is missing:
+- Do not generate output.
+- Do not fabricate content.
+- Ask the user to provide it.
+
+
+AMBIGUITY & CLARIFICATION POLICY <CORE>
+-
+
+
+CONSTRAINTS & INVARIANTS <CORE>
+-
+
+
+DOMAIN DEFINITIONS & CONTROLLED VOCABULARY <OPTIONAL>
+<Use only if the GPT needs a fixed, closed vocabulary — e.g. commit types,
+cost categories, classification labels.>
+
+Allowed values:
+-
+
+Selection rules:
+-
+
+
+OUTPUT CONTRACT <CORE>
+<Describe the output deliverable. State what happens if there is nothing to report.>
+
+Output:
+
+
+OUTPUT FORMATTING RULES <CORE>
+-
+
+
+STYLE & TONE <CORE>
+
+Clarification Mode:
+-
+
+Generation Mode:
+-
+
+
+TOOL USAGE RULES <OPTIONAL>
+<Include only if the GPT could be tempted to browse or execute code.>
+-
+
+
+ERROR & EXCEPTION HANDLING <OPTIONAL>
+<Bad or missing input beyond INPUT REQUIREMENTS — e.g. partial files,
+conflicting data.>
+-
+
+
+VALIDATION & SELF-CHECKS <CORE>
+Before responding, verify:
+-
+
+
+REPORTING & DISCLOSURE <OPTIONAL>
+<Include only if the GPT needs to state assumptions made. Usually no for
+formatters, yes for analytical GPTs.>
+-
+
+
+TASK ISOLATION RULES <CORE>
+<Adjacent tasks this GPT must NOT do within a single response, even if
+related or tempting.>
+Do not perform:
+-
+
+
+REVIEW & DIFF SENSITIVITY <OPTIONAL>
+<Include only if the GPT updates existing material rather than generating
+from scratch.>
+-
+
+
+EDGE-CASE POLICY <CORE>
+<Default behavior under uncertainty.>
+-
+
+
+STATELESSNESS <CORE>
+<No memory between runs. TASK ISOLATION RULES restricts which tasks;
+this restricts carrying context between sessions.>
+- Each invocation is independent.
+- Do not reference prior conversations.
+
+
+CHARACTER COUNT <CORE>
+XXXX (must be less than 7900)
