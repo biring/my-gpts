@@ -1,19 +1,18 @@
-### PURPOSE [CORE]
-
+PURPOSE
 This document defines how to break the Electrical Components category down into 15 fixed sub-categories and summarize them into a single table that reconciles back to the Electrical Components row in the top-level category table.
 
 This document supplements the Core GPT Instructions with electrical-sub-category classification rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.
 
 
-### SCOPE [CORE]
+SCOPE
+Applies to:
+- CBOM line items already classified as Electrical Components (per knowledge-category.md).
 
-__Applies to:__ CBOM line items already classified as Electrical Components (per knowledge-category.md).
+Does not apply to:
+- Line items classified under Mechanical Components, Bare Board, Assembly and Test, or Others.
 
-__Does not apply to:__ Line items classified under Mechanical Components, Bare Board, Assembly and Test, or Others.
 
-
-### RULES [CORE]
-
+RULES
 - Every Electrical Components line item must be assigned to exactly one of 15 sub-categories: Resistors (Commodity), Resistors (Specialty), Capacitors (Commodity), Capacitors (Specialty), Inductors (Commodity), Inductors (Specialty), Diodes, Transistors, ICs, Connectors, Crystals & Oscillators, LEDs, Switches & Relays, Fuses & Protection, Other Electrical.
 - Output is a second table, shown below the top-level category table, with exactly three columns: Sub-Category, Count, Sum of Cost.
 - Table has exactly 16 rows: one per sub-category (in the order listed above) plus a Total row. All 15 sub-category rows appear even when Count is 0.
@@ -24,8 +23,7 @@ __Does not apply to:__ Line items classified under Mechanical Components, Bare B
 - As with knowledge-category.md, distinguish rule-matched items from items routed to a sub-category only because no rule clearly applied. List the latter as "Uncertain sub-category assignments", with reference and a one-line reason. State "None" if there are none.
 
 
-### FORBIDDEN PRACTICES [CORE]
-
+FORBIDDEN PRACTICES
 - Do not leave any Electrical Components line item unassigned to a sub-category.
 - Do not assign a line item to more than one sub-category.
 - Do not invent a 16th sub-category.
@@ -33,47 +31,45 @@ __Does not apply to:__ Line items classified under Mechanical Components, Bare B
 - Do not skip the Sub-Count Check / Sub-Cost Check lines, even when both pass.
 
 
-### DECISION CRITERIA FOR AMBIGUOUS CASES [OPTIONAL]
+DECISION CRITERIA FOR AMBIGUOUS CASES
+Resistors (Commodity): standard fixed or SMD resistors.
 
-__Resistors (Commodity):__ standard fixed or SMD resistors.
+Resistors (Specialty): precision (≤0.1% tolerance), wirewound, high-power, or current-sense resistors.
 
-__Resistors (Specialty):__ precision (≤0.1% tolerance), wirewound, high-power, or current-sense resistors.
+Capacitors (Commodity): ceramic capacitors.
 
-__Capacitors (Commodity):__ ceramic capacitors.
+Capacitors (Specialty): electrolytic, tantalum, or film capacitors.
 
-__Capacitors (Specialty):__ electrolytic, tantalum, or film capacitors.
+Inductors (Commodity): chokes and ferrite beads.
 
-__Inductors (Commodity):__ chokes and ferrite beads.
+Inductors (Specialty): transformers and custom-wound inductors.
 
-__Inductors (Specialty):__ transformers and custom-wound inductors.
+Diodes: standard, Zener, Schottky diodes (signal/power, not LEDs).
 
-__Diodes:__ standard, Zener, Schottky diodes (signal/power, not LEDs).
+Transistors: BJT, MOSFET, FET.
 
-__Transistors:__ BJT, MOSFET, FET.
+ICs: MCU, analog, logic, memory, regulators.
 
-__ICs:__ MCU, analog, logic, memory, regulators.
+Connectors: board-mount headers, sockets, board-to-board/board-to-wire connectors.
 
-__Connectors:__ board-mount headers, sockets, board-to-board/board-to-wire connectors.
+Crystals & Oscillators: crystals, resonators, oscillator modules.
 
-__Crystals & Oscillators:__ crystals, resonators, oscillator modules.
+LEDs: indicator and display LEDs (separated from signal/power diodes).
 
-__LEDs:__ indicator and display LEDs (separated from signal/power diodes).
+Switches & Relays: electronic or electromechanical switching devices.
 
-__Switches & Relays:__ electronic or electromechanical switching devices.
+Fuses & Protection: fuses, TVS diodes, ESD protection devices.
 
-__Fuses & Protection:__ fuses, TVS diodes, ESD protection devices.
+Other Electrical: anything electronic not covered above (e.g. transformer-adjacent magnetics not classed as Inductors, antennas, batteries).
 
-__Other Electrical:__ anything electronic not covered above (e.g. transformer-adjacent magnetics not classed as Inductors, antennas, batteries).
-
-__Tie-breaks:__
+Tie-breaks:
 - Resistor/Capacitor/Inductor type not stated on the BOM line → default to Commodity and list under "Uncertain sub-category assignments" with reason "type not specified."
 - A component matching two sub-categories by description (e.g. a relay described as a "switch") → use the more specific term in the description (Relay → Switches & Relays).
 - If a part clearly belongs to Electrical Components but matches none of the other 14 sub-categories → Other Electrical, not a new category.
 - If still unclear after applying the above → Other Electrical, and list under Uncertain sub-category assignments.
 
 
-### EXAMPLE 1 [CORE]
-
+EXAMPLE 1
 For this sample, the top-level category table reported Electrical Components: Count 8, Sum of Cost $6.95. Breaking that down:
 
 Input (the 8 Electrical Components line items):
@@ -108,7 +104,7 @@ Output:
 | Switches & Relays | 0 | $0.00 |
 | Fuses & Protection | 0 | $0.00 |
 | Other Electrical | 0 | $0.00 |
-| **Total** | **8** | **$6.95** |
+| Total | 8 | $6.95 |
 
 Sub-Count Check: 8 = 8 (Electrical Components Count from top-level table) → PASS
 Sub-Cost Check: $6.95 = $6.95 (Electrical Components Sum of Cost from top-level table) → PASS
@@ -116,10 +112,8 @@ Sub-Cost Check: $6.95 = $6.95 (Electrical Components Sum of Cost from top-level 
 Uncertain sub-category assignments: None.
 
 
-### CHECKLIST [CORE]
-
+CHECKLIST
 Before finalizing, confirm:
-
 - Every Electrical Components line item has exactly one sub-category.
 - Table has exactly 16 rows (15 sub-categories + Total) and 3 columns, with all 15 sub-categories shown even at 0.
 - Sub-Count Check and Sub-Cost Check are both present, correctly computed, and reconcile against the top-level Electrical Components row (not the whole CBOM).
