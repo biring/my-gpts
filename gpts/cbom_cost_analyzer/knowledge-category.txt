@@ -16,9 +16,9 @@ RULES
 - Every CBOM line item must be assigned to exactly one of five labels: Electrical Components, Mechanical Components, Bare Board, Assembly and Test, Others.
 - Output is one table with exactly three columns: Label, Count, Sum of Cost.
 - Table has exactly six rows: one per label (in that order) plus a Total row.
-- Count = number of line items assigned to that label.
+- Count = number of line items assigned to that label. A multi-quantity line item (e.g. qty 2) counts as 1 line item, not qty.
 - Sum of Cost = sum of extended cost for all line items assigned to that label, rounded to 2 decimal places.
-- Immediately below the table, report the Count Check and Cost Check using the format defined in knowledge-output.txt. A check is FAIL only outside a $0.01 rounding tolerance.
+- Immediately below the table, report the Count Check and Cost Check using the format defined in knowledge-output.txt.
 - Within Others, distinguish rule-matched items (freight, duties, scrap, currency adjustment) from items routed to Others only because no rule clearly applied. List the latter in the Judgment Calls block (see knowledge-output.txt) with reference and a one-line reason.
 
 
@@ -63,7 +63,7 @@ Input CBOM (11 line items):
 | SMT assembly labor | — | — | 1 | $4.00 | $4.00 |
 | ICT test labor | — | — | 1 | $1.20 | $1.20 |
 | Inbound freight allocation | — | — | 1 | $0.30 | $0.30 |
-| RF shielding gasket, conductive foam | Laird | RG-5000 | 1 | $0.15 | $0.15 |
+| Test fixture base plate, machined aluminum | Custom Machine Co. | TF-2024-BP | 1 | $0.15 | $0.15 |
 
 Output:
 
@@ -81,7 +81,7 @@ Count Check: PASS (expected: 11, actual: 11)
 Cost Check: PASS (expected: $13.68, actual: $13.68)
 
 *Judgment Calls:*
-- *RF shielding gasket (Laird RG-5000) routed to Others — no tie-break rule clearly applies; could be Electrical (RF/EMC function) or Mechanical (physical gasket).*
+- *Test fixture base plate (Custom Machine Co. TF-2024-BP) routed to Others — no rule clearly applies; could be Mechanical (physical machined part) or Assembly and Test (test equipment). Tie-break covers test fixture build labor only, not the fixture itself.*
 
 
 CHECKLIST

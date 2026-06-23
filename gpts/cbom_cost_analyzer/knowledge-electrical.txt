@@ -12,13 +12,24 @@ Does not apply to:
 - Line items classified under Mechanical Components, Bare Board, Assembly and Test, or Others.
 
 
+CLASSIFICATION METHOD
+For every Electrical Components line item, use the combination of Description, Manufacturer Name, and Manufacturer Part Number to search the internet and determine the correct sub-category. Do not rely on description text alone.
+
+Steps for each line item:
+1. Search the internet using: [Description] [Manufacturer Name] [Manufacturer Part Number].
+2. Use the search results (datasheet, product page, distributor listing) to identify the component type.
+3. Map the identified component type to the closest matching sub-category from the 15 sub-categories defined below. If the type is identified but no sub-category matches (e.g. a battery or antenna), apply the tie-break rules under DECISION CRITERIA; skip to step 5 only if the sub-category still cannot be assigned.
+4. If search results are inconclusive or the part cannot be found, fall back to description-based matching using the DECISION CRITERIA below.
+5. If the sub-category still cannot be determined after both internet search and description-based matching → assign to Other Electrical and flag in the Judgment Calls block with reason "type undetermined."
+
+
 RULES
 - Every Electrical Components line item must be assigned to exactly one of 15 sub-categories: Resistors (Commodity), Resistors (Specialty), Capacitors (Commodity), Capacitors (Specialty), Inductors (Commodity), Inductors (Specialty), Diodes, Transistors, ICs, Connectors, Crystals & Oscillators, LEDs, Switches & Relays, Fuses & Protection, Other Electrical.
 - Output is a second table, shown below the top-level category table, with exactly three columns: Sub-Category, Count, Sum of Cost.
 - Table has exactly 16 rows: one per sub-category (in the order listed above) plus a Total row. All 15 sub-category rows appear even when Count is 0.
 - Count = number of line items assigned to that sub-category. A multi-quantity line item (e.g. qty 2) still counts as 1 line item, consistent with knowledge-category.txt.
 - Sum of Cost = sum of extended cost for all line items assigned to that sub-category, rounded to 2 decimal places.
-- Immediately below the table, report the Sub-Count Check and Sub-Cost Check using the format defined in knowledge-output.txt, reconciling against the Electrical Components row of the top-level table (not the whole CBOM). A check is FAIL only outside a $0.01 rounding tolerance.
+- Immediately below the table, report the Sub-Count Check and Sub-Cost Check using the format defined in knowledge-output.txt, reconciling against the Electrical Components row of the top-level table (not the whole CBOM).
 - Distinguish rule-matched items from items routed to a sub-category only because no rule clearly applied. List the latter in the Judgment Calls block (see knowledge-output.txt) with reference and a one-line reason.
 
 
@@ -30,22 +41,22 @@ FORBIDDEN PRACTICES
 - Do not skip the Sub-Count Check / Sub-Cost Check lines, even when both pass; use the format defined in knowledge-output.txt.
 
 
-DECISION CRITERIA FOR AMBIGUOUS CASES
-Resistors (Commodity): standard fixed or SMD resistors.
+DECISION CRITERIA (used when search is inconclusive, or when type is identified but no sub-category matches)
+Resistors (Commodity): general-purpose fixed or SMD resistors ("popcorn parts") — standard tolerance, standard wattage (≤1W), no special temperature coefficient requirement.
 
-Resistors (Specialty): precision (≤0.1% tolerance), wirewound, high-power, or current-sense resistors.
+Resistors (Specialty): any resistor meeting one or more of the following: current-sense, high wattage (>1W), tight temperature coefficient (≤100 ppm/°C), or high accuracy (≤0.1% tolerance).
 
-Capacitors (Commodity): ceramic capacitors.
+Capacitors (Commodity): ceramic, electrolytic (<1000µF), tantalum, film, and mica capacitors.
 
-Capacitors (Specialty): electrolytic, tantalum, or film capacitors.
+Capacitors (Specialty): any capacitor meeting one or more of the following: supercapacitor/ultracapacitor (EDLC), electrolytic ≥1000µF, X-rated capacitor (line-to-line EMI suppression), Y-rated capacitor (line-to-ground safety), or other safety-rated capacitors.
 
-Inductors (Commodity): chokes and ferrite beads.
+Inductors (Commodity): ferrite beads, signal inductors, standard chokes, and common mode chokes — general-purpose EMI filtering and signal-path parts.
 
-Inductors (Specialty): transformers and custom-wound inductors.
+Inductors (Specialty): transformers (isolation, flyback, forward, gate drive), custom-wound inductors, power inductors (SMPS/DC-DC converters), toroidal inductors, coupled inductors, and PFC inductors — power, energy storage, and isolation magnetics.
 
-Diodes: standard, Zener, Schottky diodes (signal/power, not LEDs).
+Diodes: standard, Zener, and Schottky diodes (signal/power, not LEDs).
 
-Transistors: BJT, MOSFET, FET.
+Transistors: discrete only — BJT, MOSFET, FET, IGBT, SCR, Triac, Diac, and other discrete power switching semiconductors. Integrated power modules classify as ICs.
 
 ICs: MCU, analog, logic, memory, regulators.
 
@@ -57,15 +68,13 @@ LEDs: indicator and display LEDs (separated from signal/power diodes).
 
 Switches & Relays: electronic or electromechanical switching devices.
 
-Fuses & Protection: fuses, TVS diodes, ESD protection devices.
+Fuses & Protection: fuses, TVS diodes, MOV (metal oxide varistors), and ESD protection devices.
 
-Other Electrical: anything electronic not covered above (e.g. transformer-adjacent magnetics not classed as Inductors, antennas, batteries).
+Other Electrical: anything electronic not covered above (e.g. antennas, batteries, modules).
 
 Tie-breaks:
-- Resistor/Capacitor/Inductor type not stated on the BOM line → default to Commodity and flag in the Judgment Calls block with reason "type not specified."
 - A component matching two sub-categories by description (e.g. a relay described as a "switch") → use the more specific term in the description (Relay → Switches & Relays).
-- If a part clearly belongs to Electrical Components but matches none of the other 14 sub-categories → Other Electrical, not a new category.
-- If still unclear after applying the above → Other Electrical, and flag in the Judgment Calls block.
+- If a part clearly belongs to Electrical Components but matches none of the other 14 sub-categories → Other Electrical, not a new category, and flag in the Judgment Calls block.
 
 
 EXAMPLE 1
@@ -90,8 +99,8 @@ Output:
 |---|---|---|
 | Resistors (Commodity) | 1 | $0.01 |
 | Resistors (Specialty) | 1 | $0.85 |
-| Capacitors (Commodity) | 1 | $0.04 |
-| Capacitors (Specialty) | 1 | $0.30 |
+| Capacitors (Commodity) | 2 | $0.34 |
+| Capacitors (Specialty) | 0 | $0.00 |
 | Inductors (Commodity) | 1 | $0.05 |
 | Inductors (Specialty) | 1 | $1.75 |
 | Diodes | 0 | $0.00 |

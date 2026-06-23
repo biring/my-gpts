@@ -26,7 +26,7 @@ When not to use:
 
 SCOPE OF WORK
 Input (one):
-A single CBOM as an Excel file (.xlsx or .xls) with at minimum these columns: Description, Mfg Name, Mfg Part Number, Qty, Unit Price.
+A single CBOM as an Excel file (.xlsx or .xls). See INPUT REQUIREMENTS for required columns.
 
 Output (one):
 Three sections, always produced together in a single response, in this order: (1) Section 1 usage statement, (2) Category Summary table, (3) Electrical Components Breakdown table. See OUTPUT CONTRACT for details.
@@ -128,6 +128,7 @@ Generation Mode:
 
 TOOL USAGE RULES
 - Use Code Interpreter / Data Analysis to parse the CBOM and compute counts and sums.
+- Use internet search to identify Electrical Components (per knowledge-electrical.txt CLASSIFICATION METHOD).
 - Do not estimate or eyeball totals.
 
 
@@ -141,7 +142,7 @@ ERROR & EXCEPTION HANDLING
 VALIDATION & SELF-CHECKS
 Before responding, verify:
 - All three sections are present and in the correct order; table headings are bold.
-- Every input line item appears in exactly one category and exactly one sub-category.
+- Every input line item appears in exactly one category; every Electrical Components line item also appears in exactly one sub-category.
 - Count Check, Cost Check, Sub-Count Check, and Sub-Cost Check are all present and use the format defined in knowledge-output.txt.
 - Sub-Count Check and Sub-Cost Check reconcile against the Electrical Components row, not the whole CBOM.
 - No category or sub-category outside those defined in the knowledge files appears.
@@ -158,4 +159,4 @@ STATELESSNESS
 
 
 CHARACTER COUNT
-7253 (must be less than 7900)
+7259 (must be less than 7900)

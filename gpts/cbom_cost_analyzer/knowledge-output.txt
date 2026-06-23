@@ -18,7 +18,7 @@ RULES
 - Produce Section 2 and Section 3 immediately after, in that order, each with a bold heading.
 - Section 2 table structure and label order are defined in knowledge-category.txt; use exactly three columns: Label, Count, Sum of Cost.
 - Section 3 table structure and sub-category label order are defined in knowledge-electrical.txt; use exactly three columns: Sub-Category, Count, Sum of Cost; all sub-categories appear even when Count is 0.
-- Place the two reconciliation checks immediately below each table, each on its own line separated by a blank line, using this format: "[Check name]: PASS (expected: [value], actual: [value])" or "FAIL (expected: [value], actual: [value] — discrepancy: [amount])".
+- Place the two reconciliation checks immediately below each table, each on its own line separated by a blank line, using this format: "[Check name]: PASS (expected: [value], actual: [value])" or "FAIL (expected: [value], actual: [value] — discrepancy: [amount])". A check is FAIL only when the discrepancy exceeds $0.01 rounding tolerance; within tolerance, report PASS.
 - Place a Judgment Calls block immediately below each section's checks. Render the label as italic text "*Judgment Calls:*" followed by italic bullet items. Cover every assumption, tie-break, default, or cost exclusion. Use a single italic bullet reading "*None.*" if no judgment calls were made.
 - All three sections are always produced together in a single response; none may be omitted.
 
