@@ -6,7 +6,7 @@ This document supplements the Core GPT Instructions with CBOM cost-classificatio
 
 SCOPE
 Applies to:
-- Any CBOM meeting the input requirements defined in the Core GPT Instructions.
+- Every CBOM line item at the point of cost category classification.
 
 Does not apply to:
 - Engineering BOMs without cost data, or assembly drawings without per-line cost.
@@ -18,9 +18,8 @@ RULES
 - Table has exactly six rows: one per label (in that order) plus a Total row.
 - Count = number of line items assigned to that label.
 - Sum of Cost = sum of extended cost for all line items assigned to that label, rounded to 2 decimal places.
-- Immediately below the table, report two checks: Count Check (sum of all Counts vs. total line items in the CBOM) and Cost Check (sum of all Sum of Cost values vs. total CBOM cost). Each check reports PASS or FAIL.
-- A check is FAIL only outside a $0.01 rounding tolerance; if FAIL, state the discrepancy amount.
-- Within Others, distinguish rule-matched items (freight, duties, scrap, currency adjustment) from items routed to Others only because no rule clearly applied. List the latter directly below the checks as "Uncertain items routed to Others", with reference and a one-line reason. State "None" if there are none.
+- Immediately below the table, report the Count Check and Cost Check using the format defined in knowledge-output.txt. A check is FAIL only outside a $0.01 rounding tolerance.
+- Within Others, distinguish rule-matched items (freight, duties, scrap, currency adjustment) from items routed to Others only because no rule clearly applied. List the latter in the Judgment Calls block (see knowledge-output.txt) with reference and a one-line reason.
 
 
 FORBIDDEN PRACTICES
@@ -28,7 +27,7 @@ FORBIDDEN PRACTICES
 - Do not assign a line item to more than one label.
 - Do not invent a sixth category; use Others for anything that doesn't fit the other four.
 - Do not silently drop a line item with missing or zero cost — classify it, count it, and let the Cost Check surface the gap.
-- Do not skip the Count Check / Cost Check lines, even when both pass.
+- Do not skip the Count Check / Cost Check lines, even when both pass; use the format defined in knowledge-output.txt.
 
 
 DECISION CRITERIA FOR AMBIGUOUS CASES
@@ -77,17 +76,19 @@ Output:
 | Others | 2 | $0.45 |
 | Total | 11 | $13.68 |
 
-Count Check: 4+2+1+2+2 = 11 = 11 line items in CBOM → PASS
-Cost Check: $4.00+$1.93+$2.10+$5.20+$0.45 = $13.68 = $13.68 CBOM total → PASS
+Count Check: PASS (expected: 11, actual: 11)
 
-Uncertain items routed to Others: RF shielding gasket (Laird RG-5000) — no tie-break rule clearly applies; could be Electrical (RF/EMC function) or Mechanical (physical gasket).
+Cost Check: PASS (expected: $13.68, actual: $13.68)
+
+*Judgment Calls:*
+- *RF shielding gasket (Laird RG-5000) routed to Others — no tie-break rule clearly applies; could be Electrical (RF/EMC function) or Mechanical (physical gasket).*
 
 
 CHECKLIST
 Before finalizing, confirm:
 - Every line item has exactly one label.
 - Table has exactly 6 rows (5 labels + Total) and 3 columns.
-- Count Check and Cost Check are both present and correctly computed.
+- Count Check and Cost Check are both present and use the format defined in knowledge-output.txt.
 - Any FAIL states the exact discrepancy amount.
 - No category outside the fixed five (+ Total) appears.
-- Uncertain Others items are listed separately from rule-matched Others items (or "None" is stated).
+- Items routed to Others only because no rule matched are listed in the Judgment Calls block (or "*None.*" is stated).

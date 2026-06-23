@@ -6,7 +6,7 @@ This document supplements the Core GPT Instructions with electrical-sub-category
 
 SCOPE
 Applies to:
-- CBOM line items already classified as Electrical Components (per knowledge-category.md).
+- CBOM line items already classified as Electrical Components (per knowledge-category.txt).
 
 Does not apply to:
 - Line items classified under Mechanical Components, Bare Board, Assembly and Test, or Others.
@@ -16,11 +16,10 @@ RULES
 - Every Electrical Components line item must be assigned to exactly one of 15 sub-categories: Resistors (Commodity), Resistors (Specialty), Capacitors (Commodity), Capacitors (Specialty), Inductors (Commodity), Inductors (Specialty), Diodes, Transistors, ICs, Connectors, Crystals & Oscillators, LEDs, Switches & Relays, Fuses & Protection, Other Electrical.
 - Output is a second table, shown below the top-level category table, with exactly three columns: Sub-Category, Count, Sum of Cost.
 - Table has exactly 16 rows: one per sub-category (in the order listed above) plus a Total row. All 15 sub-category rows appear even when Count is 0.
-- Count = number of line items assigned to that sub-category. A multi-quantity line item (e.g. qty 2) still counts as 1 line item, consistent with knowledge-category.md.
+- Count = number of line items assigned to that sub-category. A multi-quantity line item (e.g. qty 2) still counts as 1 line item, consistent with knowledge-category.txt.
 - Sum of Cost = sum of extended cost for all line items assigned to that sub-category, rounded to 2 decimal places.
-- Immediately below the table, report two checks, reconciling against the Electrical Components row of the top-level table (not the whole CBOM): Sub-Count Check and Sub-Cost Check. Each reports PASS or FAIL.
-- A check is FAIL only outside a $0.01 rounding tolerance; if FAIL, state the discrepancy amount.
-- As with knowledge-category.md, distinguish rule-matched items from items routed to a sub-category only because no rule clearly applied. List the latter as "Uncertain sub-category assignments", with reference and a one-line reason. State "None" if there are none.
+- Immediately below the table, report the Sub-Count Check and Sub-Cost Check using the format defined in knowledge-output.txt, reconciling against the Electrical Components row of the top-level table (not the whole CBOM). A check is FAIL only outside a $0.01 rounding tolerance.
+- Distinguish rule-matched items from items routed to a sub-category only because no rule clearly applied. List the latter in the Judgment Calls block (see knowledge-output.txt) with reference and a one-line reason.
 
 
 FORBIDDEN PRACTICES
@@ -28,7 +27,7 @@ FORBIDDEN PRACTICES
 - Do not assign a line item to more than one sub-category.
 - Do not invent a 16th sub-category.
 - Do not apply the Commodity/Specialty split to any family other than Resistors, Capacitors, and Inductors.
-- Do not skip the Sub-Count Check / Sub-Cost Check lines, even when both pass.
+- Do not skip the Sub-Count Check / Sub-Cost Check lines, even when both pass; use the format defined in knowledge-output.txt.
 
 
 DECISION CRITERIA FOR AMBIGUOUS CASES
@@ -63,10 +62,10 @@ Fuses & Protection: fuses, TVS diodes, ESD protection devices.
 Other Electrical: anything electronic not covered above (e.g. transformer-adjacent magnetics not classed as Inductors, antennas, batteries).
 
 Tie-breaks:
-- Resistor/Capacitor/Inductor type not stated on the BOM line → default to Commodity and list under "Uncertain sub-category assignments" with reason "type not specified."
+- Resistor/Capacitor/Inductor type not stated on the BOM line → default to Commodity and flag in the Judgment Calls block with reason "type not specified."
 - A component matching two sub-categories by description (e.g. a relay described as a "switch") → use the more specific term in the description (Relay → Switches & Relays).
 - If a part clearly belongs to Electrical Components but matches none of the other 14 sub-categories → Other Electrical, not a new category.
-- If still unclear after applying the above → Other Electrical, and list under Uncertain sub-category assignments.
+- If still unclear after applying the above → Other Electrical, and flag in the Judgment Calls block.
 
 
 EXAMPLE 1
@@ -106,17 +105,19 @@ Output:
 | Other Electrical | 0 | $0.00 |
 | Total | 8 | $6.95 |
 
-Sub-Count Check: 8 = 8 (Electrical Components Count from top-level table) → PASS
-Sub-Cost Check: $6.95 = $6.95 (Electrical Components Sum of Cost from top-level table) → PASS
+Sub-Count Check: PASS (expected: 8, actual: 8)
 
-Uncertain sub-category assignments: None.
+Sub-Cost Check: PASS (expected: $6.95, actual: $6.95)
+
+*Judgment Calls:*
+- *None.*
 
 
 CHECKLIST
 Before finalizing, confirm:
 - Every Electrical Components line item has exactly one sub-category.
 - Table has exactly 16 rows (15 sub-categories + Total) and 3 columns, with all 15 sub-categories shown even at 0.
-- Sub-Count Check and Sub-Cost Check are both present, correctly computed, and reconcile against the top-level Electrical Components row (not the whole CBOM).
+- Sub-Count Check and Sub-Cost Check are both present, use the format defined in knowledge-output.txt, and reconcile against the top-level Electrical Components row (not the whole CBOM).
 - Any FAIL states the exact discrepancy amount.
 - Commodity/Specialty split is applied only to Resistors, Capacitors, and Inductors.
-- Uncertain sub-category assignments are listed separately (or "None" is stated).
+- Items routed by judgment call are listed in the Judgment Calls block (or "*None.*" is stated).

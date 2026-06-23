@@ -1,0 +1,87 @@
+PURPOSE
+This document defines the output format and structure for every Generation Mode response. It covers Section 1 (Usage Statement), Section 2 (Category Summary), and Section 3 (Electrical Components Breakdown) — the sequence, headings, check lines, and judgment-call notation.
+
+This document supplements the Core GPT Instructions with output-format-specific rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.
+
+
+SCOPE
+Applies to:
+- Every Generation Mode response.
+
+Does not apply to:
+- Clarification Mode responses (no tables are produced).
+- Category labels, sub-category labels, classification rules, or reconciliation logic — those are defined in knowledge-category.txt and knowledge-electrical.txt.
+
+
+RULES
+- Begin every Generation Mode response with Section 1 exactly as written below.
+- Produce Section 2 and Section 3 immediately after, in that order, each with a bold heading.
+- Section 2 table structure and label order are defined in knowledge-category.txt; use exactly three columns: Label, Count, Sum of Cost.
+- Section 3 table structure and sub-category label order are defined in knowledge-electrical.txt; use exactly three columns: Sub-Category, Count, Sum of Cost; all sub-categories appear even when Count is 0.
+- Place the two reconciliation checks immediately below each table, each on its own line separated by a blank line, using this format: "[Check name]: PASS (expected: [value], actual: [value])" or "FAIL (expected: [value], actual: [value] — discrepancy: [amount])".
+- Place a Judgment Calls block immediately below each section's checks. Render the label as italic text "*Judgment Calls:*" followed by italic bullet items. Cover every assumption, tie-break, default, or cost exclusion. Use a single italic bullet reading "*None.*" if no judgment calls were made.
+- All three sections are always produced together in a single response; none may be omitted.
+
+Section 1 fixed text:
+
+**For Best Results**
+
+Provide a single PCBA CBOM as an Excel file (.xlsx or .xls) with the following columns clearly labeled:
+
+| Column | Description |
+|---|---|
+| Description | Part or material description |
+| Mfg Name | Manufacturer name |
+| Mfg Part Number | Manufacturer part number |
+| Qty | Quantity per assembly |
+| Unit Price | Unit cost (single currency) |
+
+
+FORBIDDEN PRACTICES
+- Do not omit Section 1, even if the user appears familiar with the format.
+- Do not render "For Best Results" in plain text; it must be a bold heading; the body text that follows is not bold.
+- Do not show check arithmetic (e.g. "4+2+1+2+2 = 11"); state only the check result with expected and actual values.
+- Do not render "Judgment Calls:" in bold; it is italic content, not a section heading.
+- Do not omit the Judgment Calls block after each section's checks; use a single italic bullet "*None.*" explicitly if there is nothing to report.
+- Do not share a single Judgment Calls block across both sections; each section has its own.
+- Do not define or list category labels or sub-category labels in this document; those belong solely in knowledge-category.txt and knowledge-electrical.txt.
+
+
+EXAMPLE 1
+A compliant Generation Mode response has this structure (see knowledge-category.txt and knowledge-electrical.txt for fully worked table examples):
+
+---
+[Section 1 — bold usage statement and column table, exactly as written in RULES above]
+
+**Category Summary**
+
+[Table as defined in knowledge-category.txt]
+
+Count Check: PASS (expected: [n], actual: [n])
+
+Cost Check: PASS (expected: $[x.xx], actual: $[x.xx])
+
+*Judgment Calls:*
+- *[One italic bullet per judgment call, or "None."]*
+
+**Electrical Components Breakdown**
+
+[Table as defined in knowledge-electrical.txt]
+
+Sub-Count Check: PASS (expected: [n], actual: [n])
+
+Sub-Cost Check: PASS (expected: $[x.xx], actual: $[x.xx])
+
+*Judgment Calls:*
+- *[One italic bullet per judgment call, or "None."]*
+---
+
+
+CHECKLIST
+Before finalizing, confirm:
+- Section 1 usage statement is present and rendered in bold.
+- Section 2 heading is bold; table columns are Label, Count, Sum of Cost; label order matches knowledge-category.txt.
+- Section 3 heading is bold; table columns are Sub-Category, Count, Sum of Cost; all sub-categories from knowledge-electrical.txt are shown, even at 0.
+- Reconciliation checks appear immediately below each table, using the PASS/FAIL (expected/actual) format.
+- An italic "*Judgment Calls:*" label followed by italic bullets appears immediately below each section's checks (or a single bullet "*None.*").
+- All three sections are present and in the correct order.
