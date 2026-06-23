@@ -24,7 +24,7 @@ Steps for each line item:
 
 
 RULES
-- Every Electrical Components line item must be assigned to exactly one of 15 sub-categories: Resistors (Commodity), Resistors (Specialty), Capacitors (Commodity), Capacitors (Specialty), Inductors (Commodity), Inductors (Specialty), Diodes, Transistors, ICs, Connectors, Crystals & Oscillators, LEDs, Switches & Relays, Fuses & Protection, Other Electrical.
+- Every Electrical Components line item must be assigned to exactly one of 15 sub-categories: Passive R/L/C (Commodity), Resistors (Specialty), Capacitors (Specialty), Inductors (Specialty), Diodes, Transistors, ICs, Connectors, Crystals & Oscillators, LEDs, Switches & Relays, Fuses & Protection, Sensors, Modules, Other Electrical.
 - Output is a second table, shown below the top-level category table, with exactly three columns: Sub-Category, Count, Sum of Cost.
 - Table has exactly 16 rows: one per sub-category (in the order listed above) plus a Total row. All 15 sub-category rows appear even when Count is 0.
 - Count = number of line items assigned to that sub-category. A multi-quantity line item (e.g. qty 2) still counts as 1 line item, consistent with knowledge-category.txt.
@@ -37,32 +37,28 @@ FORBIDDEN PRACTICES
 - Do not leave any Electrical Components line item unassigned to a sub-category.
 - Do not assign a line item to more than one sub-category.
 - Do not invent a 16th sub-category.
-- Do not apply the Commodity/Specialty split to any family other than Resistors, Capacitors, and Inductors.
+- Do not apply the Specialty split to any family other than Resistors, Capacitors, and Inductors.
 - Do not skip the Sub-Count Check / Sub-Cost Check lines, even when both pass; use the format defined in knowledge-output.txt.
 
 
 DECISION CRITERIA (used when search is inconclusive, or when type is identified but no sub-category matches)
-Resistors (Commodity): general-purpose fixed or SMD resistors ("popcorn parts") — standard tolerance, standard wattage (≤1W), no special temperature coefficient requirement.
+Passive R/L/C (Commodity): general-purpose fixed or SMD resistors ("popcorn parts") — standard tolerance, standard wattage (≤1W), no special temperature coefficient requirement; ceramic, electrolytic (<1000µF), tantalum, film, and mica capacitors; ferrite beads, signal inductors, standard chokes, and common mode chokes — general-purpose EMI filtering and signal-path parts.
 
 Resistors (Specialty): any resistor meeting one or more of the following: current-sense, high wattage (>1W), tight temperature coefficient (≤100 ppm/°C), or high accuracy (≤0.1% tolerance).
 
-Capacitors (Commodity): ceramic, electrolytic (<1000µF), tantalum, film, and mica capacitors.
-
 Capacitors (Specialty): any capacitor meeting one or more of the following: supercapacitor/ultracapacitor (EDLC), electrolytic ≥1000µF, X-rated capacitor (line-to-line EMI suppression), Y-rated capacitor (line-to-ground safety), or other safety-rated capacitors.
-
-Inductors (Commodity): ferrite beads, signal inductors, standard chokes, and common mode chokes — general-purpose EMI filtering and signal-path parts.
 
 Inductors (Specialty): transformers (isolation, flyback, forward, gate drive), custom-wound inductors, power inductors (SMPS/DC-DC converters), toroidal inductors, coupled inductors, and PFC inductors — power, energy storage, and isolation magnetics.
 
 Diodes: standard, Zener, and Schottky diodes (signal/power, not LEDs).
 
-Transistors: discrete only — BJT, MOSFET, FET, IGBT, SCR, Triac, Diac, and other discrete power switching semiconductors. Integrated power modules classify as ICs.
+Transistors: discrete only — BJT, MOSFET, FET, IGBT, SCR, Triac, Diac, and other discrete power switching semiconductors. Packaged multi-device power modules (e.g. half-bridge, full-bridge IGBT modules) classify as Modules, not here.
 
 ICs: MCU, analog, logic, memory, regulators.
 
 Connectors: board-mount headers, sockets, board-to-board/board-to-wire connectors.
 
-Crystals & Oscillators: crystals, resonators, oscillator modules.
+Crystals & Oscillators: crystals, resonators, oscillator modules. Classify by primary function — a canned or MEMS oscillator module routes here, not to Modules.
 
 LEDs: indicator and display LEDs (separated from signal/power diodes).
 
@@ -70,10 +66,17 @@ Switches & Relays: electronic or electromechanical switching devices.
 
 Fuses & Protection: fuses, TVS diodes, MOV (metal oxide varistors), and ESD protection devices.
 
-Other Electrical: anything electronic not covered above (e.g. antennas, batteries, modules).
+Sensors: electronic components or modules that detect, measure, or transduce physical conditions, including pressure, temperature, humidity, current, voltage, position, motion, optical, magnetic, gas, and flow sensors.
+
+Modules: integrated electronic assemblies or packaged functional blocks that combine multiple components or circuitry into one purchased line item, including DC-DC converter modules, RF/wireless modules, hybrid circuits, and similar functional electronic modules. Does not include sensing modules (→ Sensors) or frequency-generation modules (→ Crystals & Oscillators).
+
+Other Electrical: anything electronic not covered above (e.g. antennas, batteries).
 
 Tie-breaks:
 - A component matching two sub-categories by description (e.g. a relay described as a "switch") → use the more specific term in the description (Relay → Switches & Relays).
+- Modules vs. ICs: if the purchased item is a bare IC in a standard package (DIP, SOT, QFN, BGA, etc.) → ICs. If it is a multi-component assembly or module-form PCB (castellated edges, shielded can, SIP with integrated passives) → Modules.
+- Modules vs. Crystals & Oscillators: frequency-generation modules (canned oscillators, MEMS clock modules, TCXOs) → Crystals & Oscillators, not Modules.
+- A sensing module (e.g. a packaged sensor with integrated signal conditioning) → Sensors, not Modules.
 - If a part clearly belongs to Electrical Components but matches none of the other 14 sub-categories → Other Electrical, not a new category, and flag in the Judgment Calls block.
 
 
@@ -97,11 +100,9 @@ Output:
 
 | Sub-Category | Count | Sum of Cost |
 |---|---|---|
-| Resistors (Commodity) | 1 | $0.01 |
+| Passive R/L/C (Commodity) | 4 | $0.40 |
 | Resistors (Specialty) | 1 | $0.85 |
-| Capacitors (Commodity) | 2 | $0.34 |
 | Capacitors (Specialty) | 0 | $0.00 |
-| Inductors (Commodity) | 1 | $0.05 |
 | Inductors (Specialty) | 1 | $1.75 |
 | Diodes | 0 | $0.00 |
 | Transistors | 0 | $0.00 |
@@ -111,6 +112,8 @@ Output:
 | LEDs | 0 | $0.00 |
 | Switches & Relays | 0 | $0.00 |
 | Fuses & Protection | 0 | $0.00 |
+| Sensors | 0 | $0.00 |
+| Modules | 0 | $0.00 |
 | Other Electrical | 0 | $0.00 |
 | Total | 8 | $6.95 |
 
@@ -121,6 +124,8 @@ Sub-Cost Check: PASS (expected: $6.95, actual: $6.95)
 *Judgment Calls:*
 - *None.*
 
+Note: The 10k resistor, ceramic capacitor, tantalum capacitor, and ferrite bead choke all classify as Passive R/L/C (Commodity) — standard commodity passives across all three families (R, C, L) are consolidated into this single sub-category.
+
 
 CHECKLIST
 Before finalizing, confirm:
@@ -128,5 +133,5 @@ Before finalizing, confirm:
 - Table has exactly 16 rows (15 sub-categories + Total) and 3 columns, with all 15 sub-categories shown even at 0.
 - Sub-Count Check and Sub-Cost Check are both present, use the format defined in knowledge-output.txt, and reconcile against the top-level Electrical Components row (not the whole CBOM).
 - Any FAIL states the exact discrepancy amount.
-- Commodity/Specialty split is applied only to Resistors, Capacitors, and Inductors.
+- Specialty split is applied only to Resistors, Capacitors, and Inductors; all three commodity variants are consolidated under Passive R/L/C (Commodity).
 - Items routed by judgment call are listed in the Judgment Calls block (or "*None.*" is stated).
