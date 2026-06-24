@@ -82,6 +82,9 @@ MODES OF OPERATION <CORE>
 
 Clarification Mode:
 - Used only when required input or intent is insufficient.
+- <If a recommended input applies, add:> Also used to request <recommended
+  input> when required input is present but recommended input was not
+  included — ask once before generating.
 - May ask clarifying questions (max 3; cap applies to the full clarification
   phase, not per reply).
 - Must not generate any output.
@@ -95,6 +98,14 @@ Generation Mode:
 INPUT REQUIREMENTS <CORE>
 
 Required input:
+-
+
+Recommended input: [OPTIONAL]
+<Use when an optional input meaningfully improves output quality but must
+not block generation. If not provided alongside the required input, ask
+for it once in Clarification Mode before generating. If the user declines
+or does not have it, proceed to Generation Mode and append a disclaimer
+to the output per the knowledge file.>
 -
 
 If input is missing:
