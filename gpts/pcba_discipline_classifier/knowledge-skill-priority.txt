@@ -1,0 +1,207 @@
+PURPOSE
+This document defines how to convert a PCBA EE Domain Summary into a prioritized Engineering Skill Priority Table. It is used after the BOM has been classified into EE domains using knowledge-disciplines.txt and knowledge-output.txt.
+
+The goal is to identify the engineering disciplines most relevant to designing, reviewing, or debugging the PCBA. This is not an estimate of staffing, headcount, cost, or schedule.
+
+This document supplements the Core GPT Instructions with skill-priority-specific rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.
+
+
+SCOPE
+Applies to:
+- The Engineering Skill Priority Table output, produced after the EE Domain Summary Table has been generated per knowledge-output.txt.
+
+Does not apply to:
+- BOM component classification — that is covered in knowledge-disciplines.txt.
+- EE Domain Summary Table format and output rules — covered in knowledge-output.txt.
+
+
+INPUTS
+
+Required input:
+The EE Domain Summary Table generated from the CBOM per knowledge-output.txt.
+
+Recommended input:
+A schematic (PDF or image). Schematics reveal circuit function and design intent that BOM data alone cannot show. A high component-count domain is not necessarily the primary skill — the schematic may show that a lower-count domain drives the board's core function. If no schematic is provided, generate the table and append the DISCLAIMER defined in the DISCLAIMER section of this document.
+
+Use the schematic only to refine skill interpretation. Do not use it to create new BOM-domain counts.
+
+
+OUTPUT FORMAT
+
+Produce a Markdown table with the following columns:
+
+| Priority | Domain engineer type | Why |
+|---|---|---|
+
+Rules:
+1. Show only the top 3 to 5 engineering skill groups.
+2. Priority 1 is the primary engineering skill needed.
+3. Priority order is based on: active-component weight, circuit criticality, schematic functional context, and cross-domain complexity.
+4. Combine closely related domains when they represent one practical engineering skill set.
+5. Do not recommend headcount.
+6. Do not estimate cost or schedule.
+7. Do not rename original EE domains in the Domain Summary Table; engineer-type labels may combine domains for practical interpretation.
+
+
+ENGINEER TYPE MAPPING
+
+Map classified EE domains to engineering skill groups as follows:
+
+| Classified EE Domain | Engineering skill group |
+|---|---|
+| AC Power | Power Electronics / AC Power |
+| DC Power | DC Power |
+| Battery Systems | Battery Systems / Power Management |
+| High Voltage Design | High Voltage Design |
+| Motor Control & Actuation | Motor Control & Actuation |
+| Sensors | Sensors |
+| Microcontrollers / MPUs / SoC | Embedded Systems |
+| FPGA / Programmable Logic | FPGA / Digital Design |
+| Low-Speed Communication | Embedded Systems / Low-Speed Communication |
+| High-Speed Communication | High-Speed Communication / Digital Design |
+| Analog Design | Analog Design |
+| Precision Signal Acquisition | Precision Signal Acquisition |
+| Digital Design | Digital Design |
+| RF Design | RF Design |
+| Wireless Communication | Wireless Communication |
+| Embedded Firmware | Embedded Firmware |
+| User Interfaces | User Interfaces |
+
+
+DOMAIN GROUPING RULES
+
+Combine domains into practical engineer-type rows when they are naturally handled by the same engineer or when schematic context shows they are part of the same functional area.
+
+# Analog / Precision Signal Acquisition
+Combine: Analog Design, Precision Signal Acquisition, and Sensors when sensors feed precision analog/readback circuitry.
+
+Use when the board includes: op-amps, instrumentation amplifiers, ADCs, DACs, analog muxes, voltage references, detector front ends, readback circuits, or summing/integrating amplifiers.
+
+Default label: Analog Design / Precision Signal Acquisition
+
+If schematic context shows RF detector, RF amplitude, RF modulation, or RF-control signal paths, use:
+Analog Design / Precision Signal Acquisition with RF-control experience
+
+Do not change the formal BOM domain to RF Design unless active RF ICs are present.
+
+# DC Power
+Use when the board includes: LDOs, buck/boost regulators, negative regulators, power sequencing, local analog/digital supply islands, or isolated/filtered board power regions.
+
+Default label: DC Power
+
+# FPGA / Digital / High-Speed Communication
+Combine: FPGA / Programmable Logic, Digital Design, High-Speed Communication.
+
+Use when the board includes: FPGA or CPLD, configuration memory, LVDS, USB, Ethernet, PCIe, deserializers, high-speed differential signaling, or clocking/oscillator logic.
+
+Default label: FPGA / Digital + High-Speed Communication
+
+If only FPGA exists without significant interface complexity: FPGA / Digital Design
+If no FPGA exists but high-speed interfaces dominate: High-Speed Communication
+
+# Sensors / Motor Control & Actuation
+Combine: Sensors, Motor Control & Actuation.
+
+Use when schematic context shows: temperature sensors driving heater loops, thermoelectric/Peltier control, solenoids, actuators, motor drivers, or closed-loop thermal control.
+
+Default label: Sensors / Motor Control & Actuation
+
+If only sensors exist and no control loop is visible: Sensors
+
+# RF Design
+Use RF Design only when active RF-specific circuitry is present: RF front-end ICs, LNAs, PAs, RF switches, RF mixers, RF synthesizers, RF filters, antenna interfaces, or impedance-matched RF transmission paths.
+
+Do not assign RF Design because: a schematic title contains "RF," a signal name contains "RF," a discrete diode description contains "RF," or an analog circuit processes RF-related detector signals.
+
+If the schematic shows RF detector or RF control functionality implemented with op-amps, DACs, ADCs, and discrete diodes, classify as:
+Analog Design / Precision Signal Acquisition with RF-control experience
+
+
+PRIORITY RULES
+
+# Base priority from BOM weight
+Start by sorting classified domains by Weight (%) from the EE Domain Summary Table. Higher weight is a starting point — it does not automatically make a discipline primary. Schematic context may raise a lower-weight domain to a higher priority if it drives the board's core function.
+
+# Schematic adjustment
+If a schematic is available, adjust priority based on functional importance. Raise a group by one priority level if the schematic shows it is central to the board's named function.
+
+Examples:
+- A board titled "RF Control" with analog RF detector/readback circuitry may raise Analog / Precision Signal Acquisition to Priority 1 even if it is not the highest BOM weight.
+- A board with many regulators supporting several functional islands may keep DC Power high even if analog has the largest count.
+- A board with FPGA-controlled interfaces may combine FPGA, Digital Design, and High-Speed Communication into one priority row.
+
+# Tie-break rules
+When two groups have similar weight:
+1. Prefer the group tied to the board's main functional purpose.
+2. Prefer the group with more complex circuit interaction.
+3. Prefer the group with both BOM weight and schematic centrality.
+4. Keep power as a high priority when multiple independent local supply islands exist.
+
+
+WHY FIELD RULES
+
+The "Why" field must be factual and based on BOM and schematic evidence.
+
+Use short phrases such as:
+- "Main active-component weight; op-amps, ADC/DAC, mux, reference, and readback circuitry."
+- "RF detector, DAC, summing, integration, amplitude/readback circuitry."
+- "Many local regulators and isolated analog/digital supply islands."
+- "FPGA, configuration memory, LVDS/HSSB interface."
+- "Temperature sensing and detector diode heater control loops."
+
+Do not include: staffing recommendations, headcount, cost, schedule, design critique, or sourcing advice.
+
+
+OUTPUT EXAMPLES
+
+# Example A — BOM only (no schematic)
+
+| Priority | Domain engineer type | Why |
+|---|---|---|
+| 1 | **Analog Design / Precision Signal Acquisition** | Largest active-component weight; op-amps, DAC/ADC/readback, mux, reference, and signal-chain ICs |
+| 2 | **DC Power** | Many local regulators and power-island support ICs |
+| 3 | **FPGA / Digital + High-Speed Communication** | FPGA/configuration memory, LVDS/HSSB interface, logic, and clocking |
+| 4 | **Sensors** | Temperature/current-sense ICs present; circuit purpose is less clear from BOM alone |
+
+*This assessment is based on BOM data only. Providing a schematic would allow refinement based on actual circuit function and design intent.*
+
+# Example B — BOM plus schematic (RF-control context)
+
+| Priority | Domain engineer type | Why |
+|---|---|---|
+| 1 | **Analog Design / Precision Signal Acquisition with RF-control experience** | Main active-component weight; RF detector, DAC, summing, integration, amplitude/readback circuitry |
+| 2 | **DC Power** | Many local regulators and isolated analog/digital supply islands |
+| 3 | **FPGA / Digital + High-Speed Communication** | FPGA, configuration memory, LVDS/HSSB interface |
+| 4 | **Sensors / Motor Control & Actuation** | Temperature sensing and detector diode heater control loops |
+
+
+DISCLAIMER
+
+When no schematic was provided, append the following text below the Engineering Skill Priority Table:
+
+"This skill assessment is based on BOM component weight only. Higher component count indicates engineering effort present on the board, but does not determine which discipline is primary. Sharing a schematic would allow refinement based on actual circuit function and design intent."
+
+
+FORBIDDEN PRACTICES
+- Do not create new formal EE domains.
+- Do not change the original EE Domain Summary counts.
+- Do not count passives or discrete diodes as active RF components.
+- Do not label the board RF Design unless active RF-specific components or RF front-end circuitry are present.
+- Do not recommend headcount.
+- Do not estimate cost.
+- Do not perform design review.
+- Do not recommend suppliers.
+
+
+CHECKLIST
+
+Before finalizing the priority table, confirm:
+- The table has columns exactly: Priority | Domain engineer type | Why.
+- The table contains 3 to 5 rows.
+- Priority order reflects both BOM weight and schematic context, if available.
+- BOM weight was treated as a starting point, not a deciding factor — schematic context was applied where available.
+- No headcount or staffing quantity is recommended.
+- No new formal EE domain was created.
+- RF Design is used only when active RF-specific circuitry supports it.
+- If schematic context changes interpretation, it is reflected in the engineer-type label or Why field, not in BOM domain counts.
+- If no schematic was provided, the DISCLAIMER text appears below the table.

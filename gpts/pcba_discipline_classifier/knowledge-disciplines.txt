@@ -72,3 +72,4 @@ Before finalizing a component's discipline assignment, confirm:
 - The assigned discipline name matches exactly as written in the EE Domain Table.
 - The component's primary function (not its location in the schematic) drove the assignment.
 - The component's ref des (or MPN if ref des unavailable) has been recorded for the Source column.
+- If a schematic was provided, it was used to resolve ambiguous component functions before applying tie-break rules.
