@@ -1,12 +1,12 @@
 PURPOSE
-This document defines how to produce the classification output for the pcba_discipline_classifier GPT. It takes the EE discipline assigned to each active component in the CBOM (per knowledge-disciplines.txt) and produces a summary table showing which disciplines are present, their component count, relative weight, and the ref des of contributing components.
+This document defines how to produce the classification output for the pcba_discipline_classifier GPT. It takes the EE discipline assigned to each active component in the BOM (per knowledge-disciplines.txt) and produces a summary table showing which disciplines are present, their component count, relative weight, and the ref des of contributing components.
 
 This document supplements the Core GPT Instructions with output-format rules. It does not define how to assign a discipline — that is covered in knowledge-disciplines.txt. Where this document conflicts with the Instructions, the Instructions take precedence.
 
 
 SCOPE
 Applies to:
-- ICs and active modules identified in the CBOM.
+- ICs and active modules identified in the BOM.
 
 Does not apply to:
 - Passives (resistors, capacitors, inductors), connectors, ESD components, TVS diodes, fuses, bare LEDs, crystals, test points, mechanical parts, bare PCB, labor, or freight. These are ignored entirely — do not classify, flag, or include them in any output section, including Unknown.
@@ -21,7 +21,7 @@ EE Domain | Count | Weight (%) | Source
 - EE Domain — domain name exactly as written in knowledge-disciplines.txt, in the same order.
 - Count — number of active components assigned to this domain.
 - Weight (%) — (domain count / total classified active components) x 100, rounded to 1 decimal place. Domains with Count = 0 show Weight = —. Unknown items are excluded from the denominator.
-- Source — comma-separated ref des of components assigned to this domain (e.g. U1, U3, U7). If the CBOM has no ref des column, list MPNs instead. Domains with Count = 0 show Source = —.
+- Source — comma-separated ref des of components assigned to this domain (e.g. U1, U3, U7). If the BOM has no ref des column, list MPNs instead. Domains with Count = 0 show Source = —.
 
 Omit rows where Count = 0 — only show domains that are present.
 
@@ -30,7 +30,7 @@ Add a Total row at the bottom showing the sum of all classified active component
 If any active components could not be classified, add an Unknown row above the Total row with Count, Weight (%), and Source filled in.
 
 Below the table, add a one-line methodology note:
-Domains determined by identifying ICs and active modules in the CBOM, looking up each component by MPN, manufacturer name, and description via internet search (datasheet, distributor page, or manufacturer page), and matching its primary function to the EE domain table in knowledge-disciplines.txt. Where a schematic was provided, it was used to resolve ambiguous component functions.
+Domains determined by identifying ICs and active modules in the BOM, looking up each component by MPN, manufacturer name, and description via internet search (datasheet, distributor page, or manufacturer page), and matching its primary function to the EE domain table in knowledge-disciplines.txt. Where a schematic was provided, it was used to resolve ambiguous component functions.
 
 If no active components are found, do not produce a table. Instead output:
 No EE domain detected — this may be a passive-only or simple mechanical assembly.
@@ -53,7 +53,7 @@ If one or more active components cannot be classified:
 
 
 EXAMPLE 1
-Input CBOM (15 line items, 6 are active components):
+Input BOM (15 line items, 6 are active components):
 
 | Ref Des | Description | Mfg Name | MPN |
 |---|---|---|---|
@@ -77,7 +77,7 @@ Output:
 | Wireless Communication | 1 | 16.7% | U3 |
 | Total | 6 | 100.0% | |
 
-Domains determined by identifying ICs and active modules in the CBOM, looking up each component by MPN, manufacturer name, and description via internet search (datasheet, distributor page, or manufacturer page), and matching its primary function to the EE domain table in knowledge-disciplines.txt. Where a schematic was provided, it was used to resolve ambiguous component functions.
+Domains determined by identifying ICs and active modules in the BOM, looking up each component by MPN, manufacturer name, and description via internet search (datasheet, distributor page, or manufacturer page), and matching its primary function to the EE domain table in knowledge-disciplines.txt. Where a schematic was provided, it was used to resolve ambiguous component functions.
 
 Unknown Items: None.
 

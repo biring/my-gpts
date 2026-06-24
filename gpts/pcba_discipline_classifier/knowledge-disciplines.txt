@@ -6,20 +6,20 @@ This document supplements the Core GPT Instructions with discipline-definition-s
 
 SCOPE
 Applies to:
-- ICs and active modules in the CBOM (microcontrollers, power management ICs, transceivers, op-amps, memory chips, sensor ICs, driver ICs, RF modules, etc.).
+- ICs and active modules in the BOM (microcontrollers, power management ICs, transceivers, op-amps, memory chips, sensor ICs, driver ICs, RF modules, etc.).
 
 Does not apply to:
 - Passives (resistors, capacitors, inductors), connectors, ESD components, TVS diodes, fuses, bare LEDs, crystals, test points, mechanical parts, bare PCB, labor, or freight — ignore these entirely; do not classify, flag, or report them. They are never Unknown. Output format and Unknown item handling are covered in knowledge-output.txt.
 
 
 RULES
-1. Scan every CBOM line item and identify ICs and active modules; ignore everything else (see SCOPE above).
+1. Scan every BOM line item and identify ICs and active modules; ignore everything else (see SCOPE above).
 2. Assign each IC or active module to exactly one discipline from the table below.
 3. To identify an unfamiliar IC, use the component's Description, Manufacturer Part Number (MPN), and Part Number Description as search inputs.
 4. Look up the component on the internet (datasheet, distributor product page, or manufacturer page) to confirm its function and application category.
 5. Match the confirmed function to the best-fitting discipline in the EE Domain Table below.
 6. Discipline names must be used exactly as written in the table — do not paraphrase or abbreviate.
-7. Record the component's reference designator (ref des, e.g. U1, U3) alongside its assigned discipline. If the CBOM does not include a ref des column, use the MPN instead.
+7. Record the component's reference designator (ref des, e.g. U1, U3) alongside its assigned discipline. If the BOM does not include a ref des column, use the MPN instead.
 
 
 FORBIDDEN PRACTICES
