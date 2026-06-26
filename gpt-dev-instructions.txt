@@ -1,0 +1,89 @@
+PURPOSE
+Develop and maintain custom GPTs for ChatGPT. Each GPT = one instructions.txt + zero or more knowledge files. A local workspace folder is the working source of truth.
+
+
+SESSION START
+At the start of every session:
+- If {workspace} is not known, ask for it
+- Ask which GPT we are working on
+
+One GPT development per session. A session is one chat window and its stream of messages. If the user asks to work on a different GPT, stop and ask them to start a new chat session.
+
+
+WORKSPACE FOLDER
+The workspace folder path is not fixed in these instructions. Once given, use it for the rest of the session - do not ask again unless the user indicates it changed. Below it is referred to as {workspace}.
+
+
+SOURCE OF TRUTH
+Local copies under {workspace}\ are authoritative for day-to-day work.
+
+Templates:
+- Always check templates/instructions.txt and templates/knowledge.txt against the local copies.
+
+GPT folder names use lowercase snake_case (e.g. py_code_header, git_commit_msg).
+
+Knowledge files use the naming convention knowledge.txt (single file) or knowledge-<topic>.txt (multiple files), always with a hyphen. When working on a GPT, check all its knowledge files and rename any that use an underscore to follow this convention before proceeding.
+
+File extensions:
+- instructions.txt and knowledge*.txt use .txt extension
+- If a GPT file uses .md, rename it to .txt when next working on that GPT
+
+
+WORKSPACE STRUCTURE
+{workspace}
+  readme.md
+  gpt-dev-instructions.txt
+  templates/
+    instructions.txt
+    knowledge.txt
+  gpts/
+    <gpt_name>/
+      instructions.txt
+      knowledge*.txt
+
+Always confirm with the user which gpt_name we will be working on.
+
+
+GPT DESIGN CONSTRAINT
+Every GPT takes one or more input files and produces one output, in a single deterministic response. No multi-step workflows, no chained tasks, no GPT-to-GPT dependencies. This constraint is already encoded in templates/instructions.txt (Scope of Work, Modes of Operation) - do not design around it.
+
+
+WORKFLOW
+
+Step 1 - Build:
+Fill in the instructions template section by section. Add knowledge files only for content that would push instructions.txt over a reasonable length or that needs worked examples. Build against the template as-is - do not pause to evaluate template gaps. Stay focused on getting this GPT right.
+
+Step 2 - Iterate:
+Iterate with the user until they confirm the GPT is good (e.g. "this looks good"). No template changes during this phase.
+
+Step 3a - Audit:
+Run a full check against all template (instructions and knowledge) file constraints. Produce a numbered list where each item contains the issue and a suggested fix. Check for:
+- Ambiguity: any instruction that could be interpreted more than one way
+- Duplication: where the same content appears in more than one place. For each case, identify which location should be the single source of truth based on the context and scope of that file and section, and suggest removing or deferring to it from all other locations
+- Errors: anything incorrect, inconsistent, or broken
+Present the complete list to the user before making any changes.
+
+Step 3b - Resolve:
+Review each numbered item with the user. Apply only approved changes.
+
+Step 3c - Critical Check:
+Re-run 3a for critical or serious issues only. If any are found, go to 3b. If none, proceed to the next step.
+
+Step 4 - Write:
+Write the approved version to {workspace}\gpts\<gpt_name>. Overwrite any existing files - all files are under git control.
+
+Step 5 - Lessons Learned:
+Runs only after Step 4 - once the user has approved the GPT and the local files are written. Never during development.
+
+Review the finished GPT against templates/instructions.txt and templates/knowledge.txt for:
+- Add: any reusable pattern from this GPT not already in the templates
+- Revise: any existing template content that should be updated based on what was learned
+- Remove: any template content that proved unnecessary or harmful
+
+If changes are identified, update the local template files directly under {workspace}\templates, using the same [CORE] / [OPTIONAL] tagging and inline comment style already used in the templates. Recommend each change to the user explicitly - what was changed and why it came from this GPT. If nothing new was needed, say so rather than skipping the step silently.
+
+
+OUT OF SCOPE
+- Multi-turn or stateful GPTs
+- GPTs that call or depend on other GPTs
+- Any workflow beyond: input file(s) in -> one output, one response, out
