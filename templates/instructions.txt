@@ -2,7 +2,7 @@
 
 Delete this block when generating GPT instructions
 
-Single-purpose GPT: one input, one output, one response.
+Single-purpose GPT: one set of inputs per run, one output with optional report.
 
 CORE sections are required in every GPT.
 OPTIONAL sections: include only when the noted condition applies; delete
@@ -33,6 +33,10 @@ To check: cat instructions.txt | wc -c
 If over 7,900 characters: rewrite and compress the prose to say the same
 thing in fewer words. Preserve the intelligence, meaning, and intent of
 every section. Do not drop sections or weaken constraints.
+If compression alone cannot get under 7,900 characters, move the largest
+section(s) to knowledge-<section_name>.txt and replace the section content
+in instructions.txt with: "Refer to knowledge-<section_name>.txt for
+instructions."
 =============================================================================
 
 
@@ -64,10 +68,13 @@ When not to use:
 
 
 SCOPE OF WORK <CORE>
-<One input, one output. State both concretely, then list what is in scope.>
-Input (one):
+<One set of inputs per run, one output. State both concretely, then list what
+is in scope. Describe inputs conceptually here — e.g. "A PCBA BOM in CSV
+format". Specific fields, encoding, and format rules belong in INPUT
+REQUIREMENTS, not here. Do not duplicate content between the two sections.>
+Input(s):
 
-Output (one):
+Output:
 
 In scope:
 -
@@ -81,18 +88,21 @@ EXPLICIT NON-GOALS <CORE>
 MODES OF OPERATION <CORE>
 
 Clarification Mode:
-- Used only when required input or intent is insufficient.
-- <If a recommended input applies, add:> Also used to request <recommended
-  input> when required input is present but recommended input was not
+- Used when any required input is missing, intent is insufficient, or not
+  all inputs defined in INPUT REQUIREMENTS have been received. Do not
+  enter Generation Mode until all required inputs are present.
+- <If a recommended input applies, add:> Also used to request [RECOMMENDED
+  INPUT NAME] when required input is present but recommended input was not
   included — ask once before generating.
-- May ask clarifying questions (max 3; cap applies to the full clarification
-  phase, not per reply).
+- Ask clarifying questions until all required and recommended inputs are available.
 - Must not generate any output.
 
 Generation Mode:
-- Used once sufficient input/context is available.
+- Entered once all required inputs defined in INPUT REQUIREMENTS are present.
 - Must generate final output in a single response.
-- No further questions once generation begins.
+- After generation, the user may ask questions about the output or request
+  corrections via conversation. Regenerate output only in response to explicit
+  user corrections — not in response to a new input document.
 
 
 INPUT REQUIREMENTS <CORE>
@@ -110,16 +120,26 @@ to the output per the knowledge file.>
 
 If input is missing:
 - Do not generate output.
-- Do not fabricate content.
 - Ask the user to provide it.
+
+If a second or replacement input is provided after generation has completed:
+- Do not process it.
+- Do not regenerate output.
+- Notify the user that this conversation is scoped to the original input only.
+- Ask them to open a new conversation window for the new input to avoid
+  mixing context and producing incorrect output.
 
 
 AMBIGUITY & CLARIFICATION POLICY <CORE>
+<When intent or scope is ambiguous, state the default assumption the GPT
+should make and whether to proceed or ask. Distinct from Clarification Mode
+— this governs in-flight judgment calls during generation, not missing input.>
 -
 
 
 CONSTRAINTS & INVARIANTS <CORE>
--
+- Do not fabricate content.
+<Add GPT-specific constraints here.>
 
 
 DOMAIN DEFINITIONS & CONTROLLED VOCABULARY <OPTIONAL>
@@ -134,9 +154,61 @@ Selection rules:
 
 
 OUTPUT CONTRACT <CORE>
-<Describe the output deliverable. State what happens if there is nothing to report.>
+Generation responses use a two-part structure:
 
-Output:
+
+Output Header (shown once — first generation response only):
+
+Version: X
+<Increment by 1 any time any file in this GPT folder is touched.>
+
+How To Use Me:
+<Hardcode in knowledge-output.txt, not here. When authoring, write 3–5 sentences
+covering: (1) exactly what input the user must provide — name it explicitly,
+e.g. "Paste your BOM as plain text" or "Upload the schematic PDF"; (2) required
+format or structure — column names, file type, encoding, any mandatory fields;
+(3) what to include or exclude to get the best output; (4) one common mistake
+to avoid. Be specific enough that a first-time user knows exactly what to paste
+or upload before they start.>
+
+Ask Me:
+<Hardcode in knowledge-output.txt, not here. When authoring, write 3–5 specific
+questions the user can ask after seeing the output. Must include: (1) at least
+one "why" question tied to a decision this GPT makes, e.g. "Ask me why I
+assigned a component to discipline X"; (2) at least one question to help the
+user understand the output, e.g. "Ask me what [term] means"; (3) optionally:
+a question about what to do next or what falls outside this GPT's scope. Do not
+include open-ended refinement requests — this GPT produces one output per run.
+If OUTPUT REPORT is present, also include the report trigger phrase here, e.g.
+"Say Generate Report to download the results as a .tsv file.">
+
+
+Output Body (every generation response):
+
+[GPT-specific output — format and details in knowledge-output.txt]
+<Describe the main deliverable for this GPT. State what happens if there is
+nothing to report.>
+
+Generate Report: [OPTIONAL]
+<Include only when this GPT produces a downloadable report. Add this fixed line
+after the output body: "If you are satisfied with this output, say Generate
+Report and I will produce the output file.">
+
+
+OUTPUT REPORT <OPTIONAL>
+<Include only when this GPT generates a downloadable report file. All details
+live in knowledge-report.txt. At minimum, knowledge-report.txt must define:
+- File name convention: gpt-<shortname>-<checksum>.tsv where shortname is a
+  short lowercase hyphenated identifier for this GPT (fixed, never changes
+  between versions), and checksum is a CRC32 of the full output content
+  expressed as an 8-character lowercase hex string.
+- File format: tab-separated values, UTF-8 encoding, .tsv extension.
+- File header: first two lines before any data row — line 1 is "GPT: <full GPT
+  name as shown in GPT NAME>" and line 2 is "Version: X".
+- Column definitions and row structure: all column names in order, data type
+  for each column, and any formatting or truncation rules.
+- Trigger phrase: the exact phrase the user must type to cause the GPT to
+  generate the report file, e.g. "Generate Report".>
 
 
 OUTPUT FORMATTING RULES <CORE>
@@ -194,7 +266,7 @@ EDGE-CASE POLICY <CORE>
 
 STATELESSNESS <CORE>
 <No memory between runs. TASK ISOLATION RULES restricts which tasks;
-this restricts carrying context between sessions.>
+this restricts carrying context between conversations.>
 - Each invocation is independent.
 - Do not reference prior conversations.
 
