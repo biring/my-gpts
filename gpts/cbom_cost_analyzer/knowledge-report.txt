@@ -23,7 +23,7 @@ RULES
 - Body is two stacked blocks, separated by exactly one blank line, in this order: Category Summary, then Electrical Components Breakdown. Exactly one blank line separates the file header (lines 1-2) from the first block. Each block is transposed relative to the chat table: category/sub-category names are column headers, in the same order as knowledge-category.txt / knowledge-electrical.txt (including Total), with two data rows — Count and Sum of Cost.
 - The report contains only the two data blocks above — no reconciliation check lines and no Judgment Calls text.
 - Checksum is a CRC32 of the complete TSV file content, expressed as an 8-character lowercase hex string.
-- The response that delivers the report is a short confirmation sentence plus the file attachment only — it does not repeat the Category Summary or Electrical Components Breakdown chat tables.
+- Chat confirmation message format: see knowledge-output.txt.
 
 
 NAMING CONVENTIONS
@@ -49,6 +49,8 @@ DECISION CRITERIA FOR AMBIGUOUS CASES
 
 
 EXAMPLE 1
+Continues the Electrical Components dataset from knowledge-electrical.txt EXAMPLE 1 (8 line items, $6.95); the other four category totals below are illustrative, for a hypothetical 16-line-item CBOM.
+
 File name: gpt-cbom-cost-analyzer-pca-1042-rev-c-4f2a9c31.tsv
 
 File content:

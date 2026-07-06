@@ -1,45 +1,86 @@
 PURPOSE
-This document defines the output format and structure for every Generation Mode response. It covers Section 1 (Usage Statement), Section 2 (Category Summary), and Section 3 (Electrical Components Breakdown) — the sequence, headings, check lines, and judgment-call notation.
+This document defines the output format for every type of response this GPT produces.
 
 This document supplements the Core GPT Instructions with output-format-specific rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.
 
 
 SCOPE
 Applies to:
-- Every Generation Mode response.
+- The FIRST-RESPONSE HEADER, in the first response of a conversation, regardless of mode.
+- Section 1 (Category Summary) and Section 2 (Electrical Components Breakdown), in every Generation Mode response.
+- Input Mode clarifying-question responses.
+- Ask Me follow-up answers, after generation.
+- The chat confirmation message accompanying Generate Report.
 
 Does not apply to:
-- Clarification Mode responses (no tables are produced).
 - Category labels, sub-category labels, classification rules, or reconciliation logic — those are defined in knowledge-category.txt and knowledge-electrical.txt.
-- The downloadable TSV report (see knowledge-report.txt).
+- The downloadable TSV report file structure — see knowledge-report.txt.
 
 
 RULES
-- Begin every Generation Mode response with Section 1 exactly as written below.
-- Produce Section 2 and Section 3 immediately after, in that order, each with a bold heading.
-- Section 2 table structure and label order are defined in knowledge-category.txt; use exactly three columns: Label, Count, Sum of Cost.
-- Section 3 table structure and sub-category label order are defined in knowledge-electrical.txt; use exactly three columns: Sub-Category, Count, Sum of Cost; all sub-categories appear even when Count is 0.
-- Place the two reconciliation checks immediately below each table, each on its own line separated by a blank line, using this format: "[Check name]: PASS (expected: [value], actual: [value])" or "FAIL (expected: [value], actual: [value] — discrepancy: [amount])". A check is FAIL only when the discrepancy exceeds $0.01 rounding tolerance; within tolerance, report PASS.
-- Place a Judgment Calls block immediately below each section's checks. Render the label as italic text "*Judgment Calls:*" followed by italic bullet items. Cover every assumption, tie-break, default, or cost exclusion. Use a single italic bullet reading "*None.*" if no judgment calls were made.
-- All three sections are always produced together in a single response; none may be omitted.
 
-Section 1 fixed text:
+# FIRST-RESPONSE HEADER:
+Shown once, in the first response of the conversation, regardless of mode (Input Mode or Generation Mode). Not repeated in any later response.
+
+**Version: [current value — see instructions.txt OUTPUT CONTRACT]**
 
 **For Best Results**
-
-Provide a single PCBA CBOM as an Excel file (.xlsx or .xls) with the following columns clearly labeled:
+Provide a single CBOM file as Excel (.xlsx or .xls) or TSV (.tsv) with the following columns clearly labeled:
 
 | Column | Description |
 |---|---|
+| Reference Designator | Component identifier on the schematic (recommended, not required) |
 | Description | Part or material description |
 | Mfg Name | Manufacturer name |
 | Mfg Part Number | Manufacturer part number |
 | Qty | Quantity per assembly |
 | Unit Price | Unit cost (single currency) |
 
+*Common mistakes: non-numeric cost cells, missing columns.*
+
+**Ask Me:**
+Once you receive an output, you can ask:
+- Why a line item was assigned its category or sub-category.
+- What a Judgment Call or reconciliation check means.
+- Why a check reported FAIL.
+- What happens to missing or non-numeric cost items.
+- Say Generate Report to download the results as a .tsv file.
+
+**Generate Report:**
+- If you are satisfied with this output, say Generate Report and I will produce the output file.
+
+# GENERATION MODE BODY:
+- Include the FIRST-RESPONSE HEADER if this is the first response of the conversation.
+- Produce Section 1 and Section 2 in every Generation Mode response, in that order, each with a bold heading.
+- Section 1 table structure and label order are defined in knowledge-category.txt; use exactly three columns: Label, Count, Sum of Cost.
+- Section 2 table structure and sub-category label order are defined in knowledge-electrical.txt; use exactly three columns: Sub-Category, Count, Sum of Cost; all sub-categories appear even when Count is 0.
+- Place the two reconciliation checks immediately below each table, each on its own line separated by a blank line, using this format: "[Check name]: PASS (expected: [value], actual: [value])" or "FAIL (expected: [value], actual: [value] — discrepancy: [amount])". A check is FAIL only when the discrepancy exceeds $0.01 rounding tolerance; within tolerance, report PASS.
+- Place a Judgment Calls block immediately below each section's checks. Render the label as italic text "*Judgment Calls:*" followed by italic bullet items. Cover every assumption, tie-break, default, or cost exclusion. Use a single italic bullet reading "*None.*" if no judgment calls were made.
+- Both sections are always produced together in a single response; neither may be omitted.
+- If Reference Designator was not provided, state this in one line immediately above Section 1's heading.
+
+# INPUT MODE RESPONSE FORMAT:
+- Include the FIRST-RESPONSE HEADER if this is the first response of the conversation.
+- Ask only for the specific missing or unusable item(s), by name (column, format issue, or file).
+- The clarifying question itself is plain text — no bold headings, tables, or Judgment Calls block; this does not apply to the FIRST-RESPONSE HEADER, which keeps its own formatting when included.
+- Maximum 3 clarifying questions per invocation; combine into one response rather than spreading across turns.
+- Do not include any Generation Mode content (tables, checks, Judgment Calls).
+
+# ASK ME RESPONSE FORMAT:
+- Plain text answer, direct and factual; no bold section headings.
+- Reference the specific line item(s), category/sub-category, or check by name.
+- Do not restate the full Category Summary or Electrical Components Breakdown tables unless the question specifically requires showing the affected row(s).
+- Do not repeat the FIRST-RESPONSE HEADER.
+
+# GENERATE REPORT CONFIRMATION FORMAT:
+- One-line plain-text confirmation that the report file has been generated.
+- Do not repeat Category Summary or Electrical Components Breakdown content in this response.
+- Report file structure and content: see knowledge-report.txt.
+
 
 FORBIDDEN PRACTICES
-- Do not omit Section 1, even if the user appears familiar with the format.
+- Do not omit the FIRST-RESPONSE HEADER from the first response of a conversation, regardless of mode, even if the user appears familiar with the format.
+- Do not repeat the FIRST-RESPONSE HEADER in any response after the first.
 - Do not render "For Best Results" in plain text; it must be a bold heading; the body text that follows is not bold.
 - Do not show check arithmetic (e.g. "4+2+1+2+2 = 11"); state only the check result with expected and actual values.
 - Do not render "Judgment Calls:" in bold; it is italic content, not a section heading.
@@ -49,10 +90,10 @@ FORBIDDEN PRACTICES
 
 
 EXAMPLE 1
-A compliant Generation Mode response has this structure (see knowledge-category.txt and knowledge-electrical.txt for fully worked table examples):
+A compliant Generation Mode response, when it is the first response of the conversation, has this structure (see knowledge-category.txt and knowledge-electrical.txt for fully worked table examples):
 
 ---
-[Section 1 — bold usage statement and column table, exactly as written in RULES above]
+[FIRST-RESPONSE HEADER — exactly as written above]
 
 **Category Summary**
 
@@ -77,12 +118,15 @@ Sub-Cost Check: PASS (expected: $[x.xx], actual: $[x.xx])
 - *[One italic bullet per judgment call, or "None."]*
 ---
 
+Note: In an Input Mode first response, the FIRST-RESPONSE HEADER is immediately followed by the clarifying question(s), not by Category Summary.
+
 
 CHECKLIST
 Before finalizing, confirm:
-- Section 1 usage statement is present and rendered in bold.
-- Section 2 heading is bold; table columns are Label, Count, Sum of Cost; label order matches knowledge-category.txt.
-- Section 3 heading is bold; table columns are Sub-Category, Count, Sum of Cost; all sub-categories from knowledge-electrical.txt are shown, even at 0.
+- If this is the first response of the conversation (Input Mode or Generation Mode), the FIRST-RESPONSE HEADER is present per the format above; if not the first response, it is omitted.
+- Section 1 heading is bold; table columns are Label, Count, Sum of Cost; label order matches knowledge-category.txt.
+- Section 2 heading is bold; table columns are Sub-Category, Count, Sum of Cost; all sub-categories from knowledge-electrical.txt are shown, even at 0.
 - Reconciliation checks appear immediately below each table, using the PASS/FAIL (expected/actual) format.
 - An italic "*Judgment Calls:*" label followed by italic bullets appears immediately below each section's checks (or a single bullet "*None.*").
-- All three sections are present and in the correct order.
+- Both sections are present and in the correct order.
+- Input Mode, Ask Me, and Generate Report confirmation responses follow their respective format sections above.

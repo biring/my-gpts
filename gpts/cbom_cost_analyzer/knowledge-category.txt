@@ -23,7 +23,6 @@ RULES
 
 
 FORBIDDEN PRACTICES
-- Do not leave any line item unclassified.
 - Do not assign a line item to more than one label.
 - Do not invent a sixth category; use Others for anything that doesn't fit the other four.
 - Do not silently drop a line item with missing or zero cost — classify it, count it, and let the Cost Check surface the gap.
