@@ -33,23 +33,24 @@ FORBIDDEN PRACTICES
 DECISION CRITERIA FOR AMBIGUOUS CASES
 Electrical Components: parts mounted on/soldered to the PCB — resistors, capacitors, ICs, diodes, transistors, crystals, inductors, LEDs, fuses, board-mount connectors.
 
-Mechanical Components: non-electronic physical parts — enclosures, brackets, standoffs, screws, washers, passive heatsinks, gaskets, labels, adhesives, cable ties, panel-mount connectors.
+Mechanical Components: non-electronic physical parts — enclosures, brackets, standoffs, screws, washers, passive heatsinks, gaskets, labels, cable ties, panel-mount connectors.
 
 Bare Board: the unpopulated PCB fabrication line item only (one line, typically).
 
-Assembly and Test: labor and process cost — SMT/THT assembly labor, NRE/setup, ICT or functional test labor, programming, burn-in, conformal coating labor, test fixture build labor.
+Assembly and Test: labor and process cost — SMT/THT assembly labor, NRE/setup, ICT or functional test labor, programming, burn-in, conformal coating labor (labor only — coating material itself is Others), test fixture build labor.
 
-Others: everything else — freight, duties/tariffs, scrap/yield allowance, currency adjustment, miscellaneous fees.
+Others: everything else — freight, duties/tariffs, scrap/yield allowance, currency adjustment, miscellaneous fees, PCBA process consumable materials (solder, flux, conformal coating material, process adhesives/glue).
 
 Tie-breaks:
 - Heatsink with embedded active electronics → Electrical Components. Passive metal heatsink → Mechanical Components.
 - Any labor or NRE line, regardless of what it's for (including PCB test fixture build) → Assembly and Test, never Bare Board.
 - Internal wiring harness/cable assembly → Mechanical Components, unless described as a PCB jumper, then Electrical Components.
+- Any adhesive/glue material (structural, thermal, or process — e.g., heatsink bonding, enclosure bonding, staking/potting) → Others.
 - If still unclear after applying the above → Others.
 
 
 EXAMPLE 1
-Input CBOM (11 line items):
+Input CBOM (12 line items):
 
 | Description | Mfg Name | Mfg Part Number | Qty | Unit Price | Ext. Cost |
 |---|---|---|---|---|---|
@@ -64,6 +65,7 @@ Input CBOM (11 line items):
 | ICT test labor | — | — | 1 | $1.20 | $1.20 |
 | Inbound freight allocation | — | — | 1 | $0.30 | $0.30 |
 | Test fixture base plate, machined aluminum | Custom Machine Co. | TF-2024-BP | 1 | $0.15 | $0.15 |
+| Solder paste, SAC305 | Kester | EP256-XX | 1 | $0.25 | $0.25 |
 
 Output:
 
@@ -73,12 +75,12 @@ Output:
 | Mechanical Components | 2 | $1.93 |
 | Bare Board | 1 | $2.10 |
 | Assembly and Test | 2 | $5.20 |
-| Others | 2 | $0.45 |
-| Total | 11 | $13.68 |
+| Others | 3 | $0.70 |
+| Total | 12 | $13.93 |
 
-Count Check: PASS (expected: 11, actual: 11)
+Count Check: PASS (expected: 12, actual: 12)
 
-Cost Check: PASS (expected: $13.68, actual: $13.68)
+Cost Check: PASS (expected: $13.93, actual: $13.93)
 
 *Judgment Calls:*
 - *Test fixture base plate (Custom Machine Co. TF-2024-BP) routed to Others — no rule clearly applies; could be Mechanical (physical machined part) or Assembly and Test (test equipment). Tie-break covers test fixture build labor only, not the fixture itself.*
