@@ -168,10 +168,11 @@ OUTPUT CONTRACT <CORE>
 Generation responses use a two-part structure:
 
 
-Output Header (shown once — first generation response only):
+Output Header (shown once — in the first response of the conversation, regardless of mode):
 
 Version: X
 <Increment by 1 any time any file in this GPT folder is touched.>
+<If Output Header content is later moved to knowledge-output.txt for length, Version stays a tracked line here regardless — the knowledge file must reference it (e.g. "[current value — see instructions.txt OUTPUT CONTRACT]"), never hardcode the number.>
 
 How To Use Me:
 <When authoring, write 3–5 sentences covering: (1) exactly what input the user
@@ -180,7 +181,9 @@ e.g. "Paste your BOM as plain text" or "Upload the schematic PDF"; (2) required
 format or structure — column names, file type, encoding, any mandatory fields;
 (3) what to include or exclude to get the best output; (4) one common mistake
 to avoid. Be specific enough that a first-time user knows exactly what to paste
-or upload before they start.>
+or upload before they start. If knowledge-output.txt also needs to restate input
+format/columns (e.g. in a "For Best Results" block), do not duplicate — pick one
+location as the source and have the other reference it.>
 
 Ask Me:
 <When authoring, write 3–5 specific questions the user can ask after seeing
