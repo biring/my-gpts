@@ -214,14 +214,32 @@ OUTPUT REPORT <OPTIONAL>
   input that gives context for what was processed — e.g. a part number,
   document name, or lot number (author must specify the exact field or value
   to use as the identifier); and checksum is a CRC32 of the full output
-  content expressed as an 8-character lowercase hex string.
+  content expressed as an 8-character lowercase hex string. If the identifier
+  field does not already exist in Required Input, do not add it as a
+  Required Input solely for the report — that would block every generation
+  even when no report is ever requested. Instead, define a fallback in
+  knowledge-report.txt: ask the user for it only when the report is requested
+  and the value cannot be derived from the input.
 - File format: tab-separated values, UTF-8 encoding, .tsv extension.
 - File header: first two lines before any data row — line 1 is "GPT: <full GPT
-  name as shown in GPT NAME>" and line 2 is "Version: X".
+  name as shown in GPT NAME>" and line 2 is "Version: X". If a worked example
+  includes this Version line, use a placeholder — "Version: X (use current
+  Version from OUTPUT CONTRACT)" — rather than a hardcoded number, so the
+  example does not go stale as Version increments.
 - Column definitions and row structure: all column names in order, data type
-  for each column, and any formatting or truncation rules.
+  for each column, and any formatting or truncation rules. If the report
+  reproduces a chat table meant for reuse in a spreadsheet, consider
+  transposing it (category/label names as column headers, metrics as rows)
+  so it can be pasted directly into a master spreadsheet; state this
+  rationale in knowledge-report.txt's PURPOSE section.
 - Trigger phrase: the exact phrase the user must type to cause the GPT to
-  generate the report file, e.g. "Generate Report".>
+  generate the report file, e.g. "Generate Report".
+
+If a knowledge-report.txt is created for this detail (recommended whenever a
+worked example is needed), keep this section in instructions.txt to a single
+pointer sentence — "See knowledge-report.txt." — rather than restating file
+name, format, header, or trigger phrase; this avoids duplication and matches
+the Output Body → knowledge-output.txt pointer pattern.>
 
 
 OUTPUT FORMATTING RULES <CORE>

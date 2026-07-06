@@ -66,7 +66,7 @@ FORBIDDEN PRACTICES [CORE]
 
 
 DECISION CRITERIA FOR AMBIGUOUS CASES [OPTIONAL]
-<Use when classifying input into the categories defined by SCOPE/RULES requires judgment, not just lookup. State what clearly falls on each side, then give the tie-break rule for cases that remain ambiguous after that.>
+<Use when classifying input into the categories defined by SCOPE/RULES requires judgment, not just lookup. State what clearly falls on each side, then give the tie-break rule for cases that remain ambiguous after that. State the resolution action only — do not restate a constraint already listed in FORBIDDEN PRACTICES.>
 -
 
 
