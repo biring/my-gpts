@@ -110,7 +110,7 @@ Selection rules:
 
 
 OUTPUT CONTRACT
-Version: 2
+Version: 3
 See knowledge-output.txt for full output structure.
 
 
