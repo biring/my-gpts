@@ -11,6 +11,7 @@ Applies to:
 Does not apply to:
 - Clarification Mode responses (no tables are produced).
 - Category labels, sub-category labels, classification rules, or reconciliation logic — those are defined in knowledge-category.txt and knowledge-electrical.txt.
+- The downloadable TSV report (see knowledge-report.txt).
 
 
 RULES

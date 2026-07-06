@@ -1,0 +1,75 @@
+PURPOSE
+This document defines the file name, header, and column/row structure for the downloadable TSV report produced when the user requests the report be generated, after a Generation Mode response. The report's tables are transposed relative to the chat tables in knowledge-category.txt and knowledge-electrical.txt so that, once opened in Excel, the category and sub-category names line up as columns and the block can be copied directly into a master Excel file.
+
+This document supplements the Core GPT Instructions with report-format-specific rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.
+
+
+SCOPE
+Applies to:
+- The TSV report file produced when the user requests the report be generated, after a Generation Mode response.
+
+Does not apply to:
+- The in-chat Category Summary and Electrical Components Breakdown tables, reconciliation checks, and Judgment Calls — those are defined in knowledge-output.txt and are not reproduced in the report.
+- Category labels, sub-category labels, and classification rules — those are defined in knowledge-category.txt and knowledge-electrical.txt.
+
+
+RULES
+- Generate the report only when the user requests it; never proactively or before a Generation Mode response exists.
+- File name: gpt-cbom-cost-analyzer-<part-number>-<checksum>.tsv. See NAMING CONVENTIONS for derivation.
+- File format: tab-separated values, UTF-8 encoding, .tsv extension.
+- File header, lines 1–2, before any data row:
+  Line 1: "GPT: CBOM Cost Analyzer [PCBA CoE]"
+  Line 2: "Version: X" (X = the current Version number from OUTPUT CONTRACT).
+- Body is two stacked blocks, separated by exactly one blank line, in this order: Category Summary, then Electrical Components Breakdown. Exactly one blank line separates the file header (lines 1-2) from the first block. Each block is transposed relative to the chat table: category/sub-category names are column headers, in the same order as knowledge-category.txt / knowledge-electrical.txt (including Total), with two data rows — Count and Sum of Cost.
+- The report contains only the two data blocks above — no reconciliation check lines and no Judgment Calls text.
+- Checksum is a CRC32 of the complete TSV file content, expressed as an 8-character lowercase hex string.
+- The response that delivers the report is a short confirmation sentence plus the file attachment only — it does not repeat the Category Summary or Electrical Components Breakdown chat tables.
+
+
+NAMING CONVENTIONS
+- shortname is fixed: cbom-cost-analyzer (never changes between versions).
+- <part-number> is the CBOM's top-level assembly part number, lowercased, with any character other than a-z, 0-9, or hyphen replaced by a hyphen.
+- <checksum> is the 8-character lowercase hex CRC32 described in RULES.
+- Full pattern: gpt-cbom-cost-analyzer-<part-number>-<checksum>.tsv
+- Worked example: assembly part number "PCA-1042 Rev C" → gpt-cbom-cost-analyzer-pca-1042-rev-c-4f2a9c31.tsv
+
+
+FORBIDDEN PRACTICES
+- Do not generate the report before the user requests it.
+- Do not include currency symbols, thousands separators, or extra whitespace in Sum of Cost cells.
+- Do not omit any category or sub-category name that appears in knowledge-category.txt / knowledge-electrical.txt, even at Count 0.
+- Do not include reconciliation check lines or Judgment Calls text in the TSV body.
+- Do not compute the checksum from anything other than the actual final file content.
+- Do not use a line-item Mfg Part Number as the filename identifier.
+
+
+DECISION CRITERIA FOR AMBIGUOUS CASES
+- If the CBOM's top-level/assembly part number cannot be derived from the input (no such field, or more than one candidate), ask the user to provide it before generating the report.
+- If the user asks for the report before any Generation Mode response has been produced in the conversation, decline and state that a valid CBOM must be classified first.
+
+
+EXAMPLE 1
+File name: gpt-cbom-cost-analyzer-pca-1042-rev-c-4f2a9c31.tsv
+
+File content:
+GPT: CBOM Cost Analyzer [PCBA CoE]
+Version: X (use current Version from OUTPUT CONTRACT)
+
+Label	Electrical Components	Mechanical Components	Bare Board	Assembly and Test	Others	Total
+Count	8	3	1	2	2	16
+Sum of Cost	6.95	2.50	2.10	5.20	0.45	17.20
+
+Sub-Category	Passive R/L/C (Commodity)	Resistors (Specialty)	Capacitors (Specialty)	Inductors (Specialty)	Diodes	Transistors	ICs	Connectors	Crystals & Oscillators	LEDs	Switches & Relays	Fuses & Protection	Sensors	Modules	Other Electrical	Total
+Count	4	1	0	1	0	0	1	1	0	0	0	0	0	0	0	8
+Sum of Cost	0.40	0.85	0.00	1.75	0.00	0.00	3.50	0.45	0.00	0.00	0.00	0.00	0.00	0.00	0.00	6.95
+
+
+CHECKLIST
+Before finalizing the report, confirm:
+- Trigger phrase was said by the user before generation.
+- File name matches gpt-cbom-cost-analyzer-<part-number>-<checksum>.tsv with a valid assembly part number, not a line-item part number.
+- Header lines 1–2 are present and read "GPT: CBOM Cost Analyzer [PCBA CoE]" and "Version: X".
+- Exactly one blank line separates the file header from the first table block, and one blank line separates the two blocks.
+- Each table is transposed (names as column headers, Count/Sum of Cost as rows) and includes every category/sub-category name from knowledge-category.txt / knowledge-electrical.txt, in the same order, including Total.
+- Sum of Cost values are plain decimals rounded to 2 places; no reconciliation checks or Judgment Calls text appear in the file.
+- Checksum in the filename matches a CRC32 of the actual final file content.
