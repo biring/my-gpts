@@ -67,10 +67,10 @@ Step 3b - Resolve:
 Review each numbered item with the user. Apply only approved changes.
 
 Step 3c - Critical Check:
-Re-run 3a for critical or serious issues only. If any are found, go to 3b. If none, proceed to the next step.
+Re-run 3a for critical or serious issues only. If any are found, go to 3b. If none, proceed to Step 4, which begins by requesting approval to write.
 
 Step 4 - Write:
-Write the approved version to {workspace}\gpts\<gpt_name>. Overwrite any existing files - all files are under git control.
+Ask the user for explicit approval before writing. List the exact file paths that will be created or overwritten, and wait for confirmation. Only after the user confirms, write to {workspace}\gpts\<gpt_name>. Overwrite any existing files - all files are under git control.
 
 Step 5 - Lessons Learned:
 Runs only after Step 4 - once the user has approved the GPT and the local files are written. Never during development.
