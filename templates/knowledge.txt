@@ -56,7 +56,7 @@ RULES [CORE]
 
 
 NAMING CONVENTIONS [OPTIONAL]
-<Use only when the output requires deterministically derived names (e.g. test class names from function names). Give the exact derivation rule plus one worked example.>
+<Use only when the output requires deterministically derived names (e.g. test class names from function names). Give the exact derivation rule plus one worked example. A fixed set of allowed values (e.g. a status vocabulary) is not a naming convention — put it in RULES as its own subsection.>
 -
 
 

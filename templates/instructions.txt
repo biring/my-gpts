@@ -102,6 +102,8 @@ Input Mode:
 Clarification Mode: [OPTIONAL]
 - Used once all required inputs are received but intent or scope remains
   ambiguous. Skip this mode if inputs are self-explanatory.
+- If a recommended input is defined, enter this mode only after Input Mode
+  has requested it, so the user is not interrupted twice.
 - Ask clarifying questions until intent is clear and generation can proceed.
 - If a missing required input is discovered during Clarification Mode,
   request it before continuing with clarification questions. Inputs always
@@ -182,7 +184,7 @@ format or structure — column names, file type, encoding, any mandatory fields;
 (3) what to include or exclude to get the best output; (4) one common mistake
 to avoid. Be specific enough that a first-time user knows exactly what to paste
 or upload before they start. If knowledge-output.txt also needs to restate input
-format/columns (e.g. in a "For Best Results" block), do not duplicate — pick one
+format/columns (e.g. in its "How To Use Me" block), do not duplicate — pick one
 location as the source and have the other reference it.>
 
 Ask Me:
@@ -262,7 +264,10 @@ STYLE & TONE <CORE>
 
 
 TOOL USAGE RULES <OPTIONAL>
-<Include only if the GPT could be tempted to browse or execute code.>
+<Include if the GPT could be tempted to browse or execute code, or if it
+needs a tool to function — e.g. reading or producing binary file formats
+such as .docx or .xlsx. State what the tool is permitted to do, not only
+what it must not do.>
 -
 
 
@@ -278,8 +283,12 @@ Before responding, verify:
 
 
 REPORTING & DISCLOSURE <OPTIONAL>
-<Include only if the GPT needs to state assumptions made. Usually no for
-formatters, yes for analytical GPTs.>
+<Include if the GPT makes any judgment the reader cannot see — a default
+applied under ambiguity, content excluded, or an input that was missing or
+unusable. This includes formatters and summarizers; classifying and
+condensing both involve judgment. Every "note this in the output"
+instruction anywhere in this file must have exactly one defined location in
+knowledge-output.txt, or the GPT will improvise or skip it.>
 -
 
 
