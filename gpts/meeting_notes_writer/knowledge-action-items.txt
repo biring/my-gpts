@@ -21,9 +21,10 @@ RULES
 - A routine status update (e.g. "on track", "in progress") is not a decision; do not log it as one unless the transcript states an explicit decision or agreed direction alongside it.
 
 # Action Items:
+- Scan the entire transcript for commitments to a future action tied to an owner or clear next step (e.g. "I'll...", "we'll...", "let's schedule..."), including those raised in side discussions unrelated to the meeting's stated agenda; do not limit extraction to the meeting's primary topics.
 - Each action starts with a clear verb, names the project or topic, and states the expected deliverable, e.g. "Finalize Q3 budget draft for finance review" rather than "budget draft."
 - Owner is stated only when a speaker label or explicit name is present in the transcript; otherwise "Unassigned."
-- Due Date is stated only when explicitly given; otherwise "Not stated."
+- Due Date is stated only when explicitly given; otherwise "Not stated." If a single due date is stated as covering multiple requested items collectively (e.g. "get me all of this by Friday"), apply that due date to each of those action items — not only the one nearest the statement.
 - Date Created: see Reconciliation below for how it is set.
 - Notes: captures any important update, context, or blocker about the item raised in this meeting (e.g. progress, a blocker, why a due date moved). Use "—" when nothing new was discussed.
 - Do not combine two separate topics into a single action item.
@@ -55,6 +56,7 @@ FORBIDDEN PRACTICES
 - Do not drop a minor action item silently — flag it with "[Minor]" instead.
 - Do not omit any prior tracker item from the Action Items table.
 - Do not leave Notes blank when the transcript states something important about the item — use "—" only when nothing new was discussed.
+- Do not apply a collectively-stated due date to only one of the items it covers.
 
 
 DECISION CRITERIA FOR AMBIGUOUS CASES
@@ -75,8 +77,10 @@ Resulting Decision (if the transcript states it explicitly): "Proceed with finan
 
 CHECKLIST
 Before finalizing, confirm:
+- Every distinct topic or side discussion was checked for a committed next step, not only the main agenda items.
 - Every Decision is phrased as a verb-led outcome; no routine status update appears as a Decision.
 - Every Action Item starts with a verb, names the topic, and states the deliverable.
+- A due date covering multiple items was applied to each of them.
 - Every prior tracker item is present with Status Closed, Updated, or Carried Forward, and its original Date Created preserved (or "Not stated" if the tracker didn't state one).
 - New items from this meeting are listed with Status New and Date Created set to the meeting Date.
 - Minor items are flagged "[Minor]" in the Action text, not omitted.

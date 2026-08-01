@@ -16,25 +16,28 @@ Does not apply to:
 RULES
 - Generate the report only when the user requests it; never proactively or before a Generation Mode response exists.
 - Build the file using Code Interpreter / Data Analysis (see instructions.txt TOOL USAGE RULES).
-- File name: gpt-meeting-notes-writer-<meeting-identifier>-<checksum>.docx. See NAMING CONVENTIONS for derivation.
+- File name: gpt-meeting-notes-writer-<meeting-name>-<meeting-date>-<checksum>.docx. See NAMING CONVENTIONS for derivation.
 - File format: Word document (.docx).
 - Top of document, before any section: a plain two-line identifier —
   Line 1: "GPT: Meeting Notes Writer [PCBA CoE]"
   Line 2: "Version: X" (X = the current Version number from OUTPUT CONTRACT).
   No Document Control table, Revision History table, or other metadata block.
 - Body contains all six sections, in this order, each as a Word Heading-style paragraph: Meeting Info, Meeting Notes, Decisions, Action Items, Open Questions, Assumptions & Exclusions. Section content and rules are identical to knowledge-output.txt (same wording, same fallback text) — only the container changes from chat Markdown to Word formatting.
+- Font: Aptos, applied throughout the document — the two-line identifier, all headings, body text, and the Action Items table.
+- Page setup: Letter size, Landscape orientation, 0.5-inch margins on all sides.
 - Meeting Notes, Decisions, Open Questions, and Assumptions & Exclusions use native Word bulleted lists.
-- Action Items uses a native Word table (not a text table), columns #, Action, Owner, Due Date, Date Created, Status, Notes, in that order.
+- Action Items uses a native Word table (not a text table), columns #, Action, Owner, Due Date, Date Created, Status, Notes, in that order, with fixed column widths in inches: # 0.4, Action 3.2, Owner 1.3, Due Date 1.0, Date Created 1.0, Status 1.0, Notes 2.1.
 - Checksum is a CRC32 of the complete .docx file's binary content, expressed as an 8-character lowercase hex string.
 - Chat confirmation message format: see knowledge-output.txt.
 
 
 NAMING CONVENTIONS
 - shortname is fixed: meeting-notes-writer (never changes between versions).
-- <meeting-identifier> is the meeting Title from Meeting Info, lowercased, with any character other than a-z, 0-9, or hyphen replaced by a hyphen; if Title was not stated, use the Date (YYYY-MM-DD) instead; if neither is available, ask the user for a short identifier before generating the report.
+- <meeting-name> is the meeting Title from Meeting Info, lowercased, with any character other than a-z, 0-9, or hyphen replaced by a hyphen; never derived from the Date. If Title was not stated, ask the user for a short meeting identifier before generating the report; if the user does not provide it, use "unknown" in its place and note this in Assumptions & Exclusions.
+- <meeting-date> is the meeting Date from Meeting Info, formatted YYMMDD. If Date was not stated, ask the user for the meeting date before generating the report; if the user does not provide it, use "unknown" in its place and note this in Assumptions & Exclusions.
 - <checksum> is the 8-character lowercase hex CRC32 described in RULES.
-- Full pattern: gpt-meeting-notes-writer-<meeting-identifier>-<checksum>.docx
-- Worked example: Title "Q3 Budget Review" → gpt-meeting-notes-writer-q3-budget-review-4f2a9c31.docx
+- Full pattern: gpt-meeting-notes-writer-<meeting-name>-<meeting-date>-<checksum>.docx
+- Worked example: Title "Q3 Budget Review", Date 2026-07-28 → gpt-meeting-notes-writer-q3-budget-review-260728-4f2a9c31.docx
 
 
 FORBIDDEN PRACTICES
@@ -46,13 +49,12 @@ FORBIDDEN PRACTICES
 
 
 DECISION CRITERIA FOR AMBIGUOUS CASES
-- If neither Title nor Date can be derived from the transcript or file name, ask the user for a short meeting identifier before generating the report.
 - If the user asks for the report before any Generation Mode response has been produced, decline and state that a transcript must be processed first.
 - If there are no action items in the meeting notes, write the Action Items fallback text from knowledge-output.txt under the Action Items heading, instead of an empty table.
 
 
 EXAMPLE 1
-File name: gpt-meeting-notes-writer-q3-budget-review-4f2a9c31.docx
+File name: gpt-meeting-notes-writer-q3-budget-review-260728-4f2a9c31.docx
 
 Document structure (in order):
 1. "GPT: Meeting Notes Writer [PCBA CoE]" / "Version: X (use current Version from OUTPUT CONTRACT)" — plain text, two lines.
@@ -71,8 +73,10 @@ Document structure (in order):
 CHECKLIST
 Before finalizing the report, confirm:
 - Trigger phrase was said by the user before generation.
-- File name matches gpt-meeting-notes-writer-<meeting-identifier>-<checksum>.docx.
+- File name matches gpt-meeting-notes-writer-<meeting-name>-<meeting-date>-<checksum>.docx.
 - The two-line identifier is present, plain text, with no additional metadata block.
 - All six sections present as Word Headings, in order, matching knowledge-output.txt content.
-- Action Items is a native Word table with all seven columns, including reconciled and [Minor]-flagged items.
+- Font is Aptos throughout.
+- Page is Landscape (Letter) with 0.5-inch margins on all sides.
+- Action Items is a native Word table with all seven columns, including reconciled and [Minor]-flagged items, with column widths matching the specified values.
 - Checksum in the filename matches a CRC32 of the actual final file's binary content.
