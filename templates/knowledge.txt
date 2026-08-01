@@ -80,7 +80,7 @@ No-op output:
 
 
 EXAMPLE 1 [CORE]
-<One ready-to-copy block that fully satisfies the rules above. Only variable/identifier names should change when reused. Add EXAMPLE 2, EXAMPLE 3, etc. below if more than one distinct example is needed (e.g. one per case the rules cover); a single EXAMPLE is sufficient for most files.>
+<One ready-to-copy block that fully satisfies the rules above. Only variable/identifier names should change when reused. Every value in the example's output (e.g. a date, an ID) must be traceable to information stated within that same example — not assumed from outside context — so the derivation is self-contained. Add EXAMPLE 2, EXAMPLE 3, etc. below if more than one distinct example is needed (e.g. one per case the rules cover); a single EXAMPLE is sufficient for most files.>
 
 
 CHECKLIST [CORE]
