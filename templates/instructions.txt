@@ -33,10 +33,25 @@ To check: cat instructions.txt | wc -c
 If over 7,900 characters: rewrite and compress the prose to say the same
 thing in fewer words. Preserve the intelligence, meaning, and intent of
 every section. Do not drop sections or weaken constraints.
-If compression alone cannot get under 7,900 characters, move the largest
-section(s) to knowledge-<section_name>.txt and replace the section content
-in instructions.txt with: "Refer to knowledge-<section_name>.txt for
-instructions." Use the knowledge.txt template to structure the new file
+If compression alone cannot get under 7,900 characters, extract sections to
+knowledge-<section_name>.txt in this priority order: OUTPUT REPORT first,
+then OUTPUT CONTRACT (Output Body detail), then INPUT REQUIREMENTS. Each is
+self-contained reference/mechanical detail with no control-flow logic, so
+extracting them rarely weakens the GPT.
+
+Do not extract MODES OF OPERATION. It gates whether the GPT is allowed to
+generate output at all, and knowledge files are retrieved semantically
+rather than guaranteed to be in context every turn — a missing gating rule
+risks premature generation, not just a formatting miss. If the file is still
+over budget after extracting the three sections above, compress remaining
+CORE sections further before considering any other section for extraction.
+
+Replace each extracted section's content in instructions.txt with a pointer
+sentence: "See knowledge-<section_name>.txt." Add a short descriptive phrase
+(e.g. "for accepted formats and X") only when more than one knowledge file
+could plausibly cover the topic and the reader needs to know which one to
+open; otherwise the bare pointer is sufficient — the section heading already
+scopes the topic. Use the knowledge.txt template to structure the new file
 and add sections as needed to fully cover the moved content.
 =============================================================================
 
@@ -226,9 +241,19 @@ Output Body (every generation response):
 nothing to report.>
 
 Generate Report: [OPTIONAL]
-<Include only when this GPT produces a downloadable report. Add this fixed line
-after the output body: "If you are satisfied with this output, say Generate
-Report and I will produce the output file.">
+<Include only when this GPT produces a downloadable report. Add sentence(s)
+after the output body, in this order: (1) name the document type this GPT
+can generate, from OUTPUT REPORT's file format (e.g. "a Word document" /
+"a .tsv file"); (2) state what the report contains, from OUTPUT REPORT's
+column/section definitions (e.g. "with the full meeting notes" / "with one
+row per component"); (3) give the exact Trigger phrase from OUTPUT REPORT and
+tell the user that saying it produces the file. Never reuse a fixed phrase
+across GPTs — document type, contents, and trigger phrase vary per GPT.
+The report is never generated before the output body itself exists in this
+response — this line only appears after output, never as a first response.
+Example: "If you are satisfied with this output, say Generate Report and I
+will produce a Word document containing the full meeting notes, decisions,
+and action items.">
 
 
 OUTPUT REPORT <OPTIONAL>
