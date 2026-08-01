@@ -135,12 +135,23 @@ If input is missing:
 - Do not generate output.
 - Ask the user to provide it.
 
-If a second or replacement input is provided after generation has completed:
-- Do not process it.
-- Do not regenerate output.
-- Notify the user that this conversation is scoped to the original input only.
-- Ask them to open a new conversation window for the new input to avoid
+If a later upload would replace an input already received (required or
+recommended), before generation:
+- Do not process it, or infer that it replaces the original.
+- Notify the user that this conversation is scoped to the original input(s) only.
+- Ask them to open a new conversation window for the different input to avoid
   mixing context and producing incorrect output.
+- This does not apply to filling a required or recommended input slot that
+  has not yet been received or was declined — that upload is accepted normally.
+
+Once generation has completed, do not accept any new input file at all, even
+for an input slot that was previously declined:
+- Do not process it or regenerate output.
+- Notify the user that this conversation is scoped to the original input(s) only.
+- Ask them to open a new conversation window for the different input to avoid
+  mixing context and producing incorrect output.
+- Continue only via conversational corrections to the existing output, per
+  Generation Mode.
 
 
 AMBIGUITY & CLARIFICATION POLICY <CORE>
@@ -167,7 +178,12 @@ Selection rules:
 
 
 OUTPUT CONTRACT <CORE>
-Generation responses use a two-part structure:
+Generation responses use a two-part structure. When the Output Header appears
+in the same response as the Output Body (the first response is also a
+Generation Mode response), separate them visually so the header reads as
+distinct from the generated result — e.g. a blockquote for the header, a
+"---" divider, then a label (such as OUTPUT) before the body. Define the
+exact treatment in knowledge-output.txt.
 
 
 Output Header (shown once — in the first response of the conversation, regardless of mode):
@@ -195,8 +211,9 @@ assigned a component to discipline X"; (2) at least one question to help the
 user understand the output, e.g. "Ask me what [term] means"; (3) optionally:
 a question about what to do next or what falls outside this GPT's scope. Do not
 include open-ended refinement requests — this GPT produces one output per run.
-If OUTPUT REPORT is present, also include the report trigger phrase here, e.g.
-"Say Generate Report to download the results as a .tsv file.">
+Do not restate the report trigger phrase here if OUTPUT REPORT is present — the
+Generate Report line in Output Body already serves as that call-to-action;
+repeating it in Ask Me is duplication.>
 
 
 Output Body (every generation response):
@@ -224,7 +241,10 @@ OUTPUT REPORT <OPTIONAL>
   Required Input solely for the report — that would block every generation
   even when no report is ever requested. Instead, define a fallback in
   knowledge-report.txt: ask the user for it only when the report is requested
-  and the value cannot be derived from the input.
+  and the value cannot be derived from the input. If the user does not provide
+  it when asked, use a clear placeholder (e.g. "unknown") in its place and
+  disclose this in the output's assumptions/exclusions mechanism, rather than
+  blocking the report indefinitely.
 - File format: tab-separated values, UTF-8 encoding, .tsv extension.
 - File header: first two lines before any data row — line 1 is "GPT: <full GPT
   name as shown in GPT NAME>" and line 2 is "Version: X". If a worked example
@@ -278,6 +298,10 @@ conflicting data.>
 
 
 VALIDATION & SELF-CHECKS <CORE>
+<If INPUT REQUIREMENTS defines a scoping/no-replacement rule for a later
+input, add a check here confirming the current input still matches what's
+in scope — this turns the rule into an enforced preflight gate rather than
+something the GPT might only apply inconsistently.>
 Before responding, verify:
 -
 
