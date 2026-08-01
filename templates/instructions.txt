@@ -183,7 +183,10 @@ in the same response as the Output Body (the first response is also a
 Generation Mode response), separate them visually so the header reads as
 distinct from the generated result — e.g. a blockquote for the header, a
 "---" divider, then a label (such as OUTPUT) before the body. Define the
-exact treatment in knowledge-output.txt.
+exact treatment in knowledge-output.txt. If the header mixes bold labels
+with bulleted or narrative content, state explicitly which parts are bold
+and which are plain — a worked example alone is not enough; models can
+over-generalize bold formatting from an example that's mostly bold labels.
 
 
 Output Header (shown once — in the first response of the conversation, regardless of mode):
@@ -312,7 +315,11 @@ applied under ambiguity, content excluded, or an input that was missing or
 unusable. This includes formatters and summarizers; classifying and
 condensing both involve judgment. Every "note this in the output"
 instruction anywhere in this file must have exactly one defined location in
-knowledge-output.txt, or the GPT will improvise or skip it.>
+knowledge-output.txt, or the GPT will improvise or skip it. Do not repeat
+the "note this in the output" phrase at every individual trigger site
+elsewhere in this file — state the triggering condition there, and
+centralize the disclosure instruction here once; repeating it at each site
+duplicates the rule and risks pushing the file over the character limit.>
 -
 
 

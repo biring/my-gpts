@@ -61,7 +61,7 @@ NAMING CONVENTIONS [OPTIONAL]
 
 
 FORBIDDEN PRACTICES [CORE]
-<Known anti-patterns specific to this domain. Pair each with the correct alternative when the mistake is non-obvious (e.g. wrong target referenced, wrong scope, mismatched naming).>
+<Known anti-patterns specific to this domain. Pair each with the correct alternative when the mistake is non-obvious (e.g. wrong target referenced, wrong scope, mismatched naming). Also check for cross-section duplication within the same output — if two sections could restate the same fact about the same item (e.g., a narrative section and a structured tracking section), designate one as the source of truth and instruct the other to omit or defer to it.>
 -
 
 
