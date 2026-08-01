@@ -101,7 +101,7 @@ CONSTRAINTS & INVARIANTS
 
 
 OUTPUT CONTRACT
-Version: 4
+Version: 5
 See knowledge-output.txt for full output structure.
 
 
