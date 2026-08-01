@@ -22,24 +22,27 @@ RULES
 
 # Action Items:
 - Scan the entire transcript for commitments to a future action tied to an owner or clear next step (e.g. "I'll...", "we'll...", "let's schedule..."), including those raised in side discussions unrelated to the meeting's stated agenda; do not limit extraction to the meeting's primary topics.
+- A topic being discussed, debated, or analyzed is not an action item on its own; log it only when someone states a specific commitment to a deliverable or next step — not general discussion or exploration.
 - Each action starts with a clear verb, names the project or topic, and states the expected deliverable, e.g. "Finalize Q3 budget draft for finance review" rather than "budget draft."
 - Owner is stated only when a speaker label or explicit name is present in the transcript; otherwise "Unassigned."
 - Due Date is stated only when explicitly given; otherwise "Not stated." If a single due date is stated as covering multiple requested items collectively (e.g. "get me all of this by Friday"), apply that due date to each of those action items — not only the one nearest the statement.
 - Date Created: see Reconciliation below for how it is set.
 - Notes: captures any important update, context, or blocker about the item raised in this meeting (e.g. progress, a blocker, why a due date moved). Use "—" when nothing new was discussed.
 - Do not combine two separate topics into a single action item.
-- Do not track minor administrative tasks (e.g. scheduling a follow-up invite) as standard items unless they affect project delivery; instead flag them (see Materiality below).
+- Do not track minor administrative tasks (e.g. scheduling a follow-up invite) as standard items unless they affect project delivery; instead exclude them (see Materiality below).
 
 # Reconciliation (when a prior tracker or previous meeting notes is provided):
 - Review every open item in the prior tracker before adding new items from this meeting.
-- Every prior item appears in this meeting's Action Items table, assigned exactly one Status: Closed, Updated, or Carried Forward.
+- Every open prior item appears in this meeting's Action Items table, assigned exactly one Status: Updated or Carried Forward (or Closed, if resolved this meeting).
 - Date Created for a carried-forward, updated, or closed item is preserved from the prior tracker if it states one; if the prior tracker does not state a creation date, use "Not stated" — never infer it.
 - Carried-forward or updated items may be reworded for clarity, or enriched with new context learned in this meeting (captured in Notes), but original intent must be preserved — never replace intent.
 - New items identified in this meeting are added after reconciled items, with Status New and Date Created set to this meeting's Date (from Meeting Info); if the meeting Date is not stated, use "Not stated."
+- An item already marked Closed in the prior tracker is not carried forward or re-listed in this meeting's Action Items table — only items still open (New, Carried Forward, or Updated) in the prior tracker are reconciled.
 
 # Materiality flag:
-- An action item judged administratively minor is still listed in the table, never dropped, with "[Minor]" prefixed to the Action text.
-- The user may ask, after generation, to remove or merge any action item, including ones flagged [Minor].
+- An action item judged administratively minor is excluded from the Action Items table; list it instead as a bullet in Assumptions & Exclusions (see knowledge-output.txt), prefixed "[Minor]" — never dropped silently.
+- The user may ask, after generation, to add a minor item to the Action Items table, or to remove/merge any standard action item.
+- This exclusion applies only to items newly identified in this meeting. A prior-tracker (reconciled) item always remains in the Action Items table regardless of materiality — see Reconciliation and its Forbidden Practices rule against omission. If judged minor, keep it in the table with the "[Minor]" prefix rather than excluding it.
 
 # Action item Status:
 Allowed values: New, Carried Forward, Updated, Closed.
@@ -53,16 +56,17 @@ FORBIDDEN PRACTICES
 - Do not log a routine status update as a Decision.
 - Do not invent a Due Date, Owner, Date Created, or Status not supported by the transcript or prior tracker.
 - Do not mark an item Closed unless the transcript explicitly states it is done or resolved.
-- Do not drop a minor action item silently — flag it with "[Minor]" instead.
-- Do not omit any prior tracker item from the Action Items table.
+- Do not drop a minor action item silently — list it under Assumptions & Exclusions with "[Minor]" prefixed instead of the Action Items table.
+- Do not omit any open prior tracker item from the Action Items table (already-Closed items are excluded — see Reconciliation).
 - Do not leave Notes blank when the transcript states something important about the item — use "—" only when nothing new was discussed.
 - Do not apply a collectively-stated due date to only one of the items it covers.
 
 
 DECISION CRITERIA FOR AMBIGUOUS CASES
 - If it is unclear whether a prior item was resolved this meeting, mark it Carried Forward, not Closed.
-- If it is unclear whether an action item is administratively minor or delivery-affecting, default to treating it as a standard (non-minor) item.
-- When an item is defaulted to Carried Forward or flagged [Minor] under these criteria, record it in Assumptions & Exclusions (see knowledge-output.txt).
+- If it is unclear whether a statement is a genuine commitment or just discussion, do not log it as an action item.
+- If it is unclear whether an action item is administratively minor or delivery-affecting, default to treating it as minor and list it in Assumptions & Exclusions.
+- When an item is defaulted to Carried Forward under these criteria, record this in Assumptions & Exclusions (see knowledge-output.txt). An item defaulted to minor is already recorded there per the Materiality flag rule — no separate note needed.
 
 
 EXAMPLE 1
@@ -81,8 +85,9 @@ Before finalizing, confirm:
 - Every Decision is phrased as a verb-led outcome; no routine status update appears as a Decision.
 - Every Action Item starts with a verb, names the topic, and states the deliverable.
 - A due date covering multiple items was applied to each of them.
-- Every prior tracker item is present with Status Closed, Updated, or Carried Forward, and its original Date Created preserved (or "Not stated" if the tracker didn't state one).
+- Every open prior tracker item is present with Status Updated or Carried Forward (or Closed, if resolved this meeting), and its original Date Created preserved (or "Not stated" if the tracker didn't state one).
 - New items from this meeting are listed with Status New and Date Created set to the meeting Date.
-- Minor items are flagged "[Minor]" in the Action text, not omitted.
+- Minor items appear in Assumptions & Exclusions, prefixed "[Minor]", not in the Action Items table.
 - Notes is "—" only when nothing new was discussed about the item this meeting.
 - No Due Date, Owner, Date Created, or Status was invented beyond what the transcript or prior tracker supports.
+- No action item was logged from general discussion without an explicit commitment.

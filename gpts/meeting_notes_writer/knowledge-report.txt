@@ -43,7 +43,7 @@ NAMING CONVENTIONS
 FORBIDDEN PRACTICES
 - Do not generate the report before the user requests it.
 - Do not add a Document Control table, Revision History table, cover page, or any content beyond the two-line identifier and the six sections.
-- Do not omit an action item that appears in the chat Action Items table, including reconciled or [Minor]-flagged items.
+- Do not omit an action item that appears in the chat Action Items table, including reconciled items.
 - Do not render Action Items as a text table or image — it must be a native Word table.
 - Do not compute the checksum from anything other than the actual final file's binary content.
 
@@ -56,18 +56,14 @@ DECISION CRITERIA FOR AMBIGUOUS CASES
 EXAMPLE 1
 File name: gpt-meeting-notes-writer-q3-budget-review-260728-4f2a9c31.docx
 
-Document structure (in order):
+Document structure (in order), using the same Q3 Budget Review content as knowledge-output.txt EXAMPLE 1:
 1. "GPT: Meeting Notes Writer [PCBA CoE]" / "Version: X (use current Version from OUTPUT CONTRACT)" — plain text, two lines.
-2. Heading: Meeting Info — Title: Q3 Budget Review; Date: 2026-07-28; Attendees: Jane Lee, Mark Ito, Priya Nair.
-3. Heading: Meeting Notes — bulleted list, one bullet per topic.
-4. Heading: Decisions — bulleted list, e.g. "Proceed with finance review of the Q3 budget draft."
-5. Heading: Action Items — Word table:
-   # | Action | Owner | Due Date | Date Created | Status | Notes
-   1 | Finalize Q3 budget draft for finance review | Mark Ito | 2026-08-05 | 2026-07-10 | Updated | Draft complete; awaiting finance sign-off.
-   2 | Circulate meeting recording | Priya Nair | Not stated | 2026-07-14 | Closed | Sent to all attendees 2026-07-28.
-   3 | [Minor] Send calendar invite for finance review | Unassigned | Not stated | 2026-07-28 | New | —
-6. Heading: Open Questions — bulleted list.
-7. Heading: Assumptions & Exclusions — bulleted list, or "None." if no judgment calls were made.
+2. Heading: Meeting Info — same content as knowledge-output.txt EXAMPLE 1, as plain text (Title/Date/Attendees lines, not a table or bulleted list).
+3. Heading: Meeting Notes — same content as knowledge-output.txt EXAMPLE 1, as a native Word bulleted list.
+4. Heading: Decisions — same content as knowledge-output.txt EXAMPLE 1, as a native Word bulleted list.
+5. Heading: Action Items — same rows as knowledge-output.txt EXAMPLE 1, as a native Word table (not a Markdown table).
+6. Heading: Open Questions — same content as knowledge-output.txt EXAMPLE 1, as a native Word bulleted list.
+7. Heading: Assumptions & Exclusions — same content as knowledge-output.txt EXAMPLE 1, as a native Word bulleted list.
 
 
 CHECKLIST
@@ -78,5 +74,5 @@ Before finalizing the report, confirm:
 - All six sections present as Word Headings, in order, matching knowledge-output.txt content.
 - Font is Aptos throughout.
 - Page is Landscape (Letter) with 0.5-inch margins on all sides.
-- Action Items is a native Word table with all seven columns, including reconciled and [Minor]-flagged items, with column widths matching the specified values.
+- Action Items is a native Word table with all seven columns, including reconciled items, with column widths matching the specified values.
 - Checksum in the filename matches a CRC32 of the actual final file's binary content.
