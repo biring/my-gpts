@@ -50,30 +50,34 @@ Every GPT takes one or more input files and produces one output, in a single det
 
 WORKFLOW
 
-Step 1 - Build:
-Fill in the instructions template section by section. Add knowledge files only for content that would push instructions.txt over a reasonable length or that needs worked examples. Build against the template as-is - do not pause to evaluate template gaps. Stay focused on getting this GPT right.
+Build (1) through Critical Check (5) operate on drafts only - no file under {workspace}\gpts\<gpt_name>, {workspace}\templates, or gpt-dev-instructions.txt is created or modified until Write (6) confirms it in writing.
 
-Step 2 - Iterate:
+When presenting multiple items for review (Build (1)'s list in Iterate (2), or Audit (3) findings in Resolve (4)), always give a summary first tagging each item New, Update, or Remove, then review items one at a time - never in bulk - showing Before, After, and Reason, and wait for the user to Approve, Change, or Reject before moving to the next.
+
+Step - Build (1):
+Start by establishing what needs to be created or changed - ask the user for it if not already stated. For a new GPT, this means filling in the instructions template section by section, against the template as-is - do not pause to evaluate template gaps. For a revision to an existing GPT, this means gathering the specific list of changes or feedback to address. Add knowledge files only for content that would push instructions.txt over a reasonable length or that needs worked examples. Stay focused on getting this GPT right. The output of this step is the list of sections or changes to work through in Iterate (2).
+
+Step - Iterate (2):
 Iterate with the user until they confirm the GPT is good (e.g. "this looks good"). No template changes during this phase.
 
-Step 3a - Audit:
+Step - Audit (3):
 Run a full check against all template (instructions and knowledge) file constraints. Produce a numbered list where each item contains the issue and a suggested fix. Check for:
 - Ambiguity: any instruction that could be interpreted more than one way
 - Duplication: where the same content appears in more than one place. For each case, identify which location should be the single source of truth based on the context and scope of that file and section, and suggest removing or deferring to it from all other locations
 - Errors: anything incorrect, inconsistent, or broken
-Present the complete list to the user before making any changes.
+Present the complete list to the user before making any changes. For a revision to an already-shipped GPT (Write (6) previously completed), scope the audit to the changed content and its interactions with the rest of the file(s), rather than re-auditing unchanged, previously-approved baseline content.
 
-Step 3b - Resolve:
+Step - Resolve (4):
 Review each numbered item with the user. Apply only approved changes.
 
-Step 3c - Critical Check:
-Re-run 3a for critical or serious issues only. If any are found, go to 3b. If none, proceed to Step 4, which begins by requesting approval to write.
+Step - Critical Check (5):
+Re-run Audit (3) for critical or serious issues only. If any are found, go to Resolve (4). If none, proceed to Write (6), which begins by requesting approval to write.
 
-Step 4 - Write:
+Step - Write (6):
 Ask the user for explicit approval before writing. List the exact file paths that will be created or overwritten, and wait for confirmation. Only after the user confirms, write to {workspace}\gpts\<gpt_name>. Overwrite any existing files - all files are under git control.
 
-Step 5 - Lessons Learned:
-Runs only after Step 4 - once the user has approved the GPT and the local files are written. Never during development.
+Step - Lessons Learned (7):
+Runs only after Write (6) - once the user has approved the GPT and the local files are written. Never during development.
 
 Review the finished GPT against templates/instructions.txt and templates/knowledge.txt for:
 - Add: any reusable pattern from this GPT not already in the templates
@@ -81,6 +85,14 @@ Review the finished GPT against templates/instructions.txt and templates/knowled
 - Remove: any template content that proved unnecessary or harmful
 
 If changes are identified, update the local template files directly under {workspace}\templates, using the same [CORE] / [OPTIONAL] tagging and inline comment style already used in the templates. Recommend each change to the user explicitly - what was changed and why it came from this GPT. If nothing new was needed, say so rather than skipping the step silently.
+
+Step - Project Instructions Improvement (8):
+Runs only after Lessons Learned (7) completes. Review this session's process against gpt-dev-instructions.txt (the project instructions) itself for:
+- Add: any reusable process step or clarification not already documented
+- Revise: any existing instruction that caused ambiguity or friction during this session
+- Remove: any instruction that proved unnecessary or harmful
+
+If changes are identified, update gpt-dev-instructions.txt directly, following the review format above. Recommend each change to the user explicitly - what was changed and why. If nothing new was needed, say so rather than skipping the step silently.
 
 
 OUT OF SCOPE
