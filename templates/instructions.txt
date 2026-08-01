@@ -5,8 +5,7 @@ Delete this block when generating GPT instructions
 Single-purpose GPT: one set of inputs per run, one output with optional report.
 
 CORE sections are required in every GPT.
-OPTIONAL sections: include only when the noted condition applies; delete
-the section otherwise.
+OPTIONAL sections are include only when the noted condition applies; delete the section otherwise.
 
 FORMATTING HIERARCHY (plain text, no markdown):
   SECTION NAME     — top level, ALL CAPS, no prefix
@@ -14,8 +13,7 @@ FORMATTING HIERARCHY (plain text, no markdown):
   - item           — list item under a label or section
   # Subsection:    — named subsection; use only when a section has three or
   - item             more named groups; one or two groups use plain Label: instead
-  <note>           — authoring instruction or hint; remove entirely when
-                     generating GPT instructions
+  <note> — authoring instruction or hint; remove entirely when generating GPT instructions
 
 SPACING RULES:
   2 blank lines before every SECTION NAME
@@ -25,34 +23,16 @@ SPACING RULES:
   1 blank line between plain Labels: within the same section
 
 CHARACTER COUNT CHECK:
-ChatGPT enforces a hard limit on GPT instructions. Keep the final file
-under 7,900 characters after deleting the template notes block and all <...> content.
+ChatGPT enforces a hard limit on GPT instructions. Keep the final file under 7,900 characters after deleting the template notes block and all <...> content.
 
 To check: cat instructions.txt | wc -c
 
-If over 7,900 characters: rewrite and compress the prose to say the same
-thing in fewer words. Preserve the intelligence, meaning, and intent of
-every section. Do not drop sections or weaken constraints.
-If compression alone cannot get under 7,900 characters, extract sections to
-knowledge-<section_name>.txt in this priority order: OUTPUT REPORT first,
-then OUTPUT CONTRACT (Output Body detail), then INPUT REQUIREMENTS. Each is
-self-contained reference/mechanical detail with no control-flow logic, so
-extracting them rarely weakens the GPT.
+If over 7,900 characters: rewrite and compress the prose to say the same thing in fewer words. Preserve the intelligence, meaning, and intent of every section. Do not drop sections or weaken constraints.
+If compression alone cannot get under 7,900 characters, extract sections to knowledge-<section_name>.txt in this priority order: OUTPUT REPORT first, then OUTPUT CONTRACT (Output Body detail), then INPUT REQUIREMENTS. Each is self-contained reference/mechanical detail with no control-flow logic, so extracting them rarely weakens the GPT.
 
-Do not extract MODES OF OPERATION. It gates whether the GPT is allowed to
-generate output at all, and knowledge files are retrieved semantically
-rather than guaranteed to be in context every turn — a missing gating rule
-risks premature generation, not just a formatting miss. If the file is still
-over budget after extracting the three sections above, compress remaining
-CORE sections further before considering any other section for extraction.
+Do not extract MODES OF OPERATION. It gates whether the GPT is allowed to generate output at all, and knowledge files are retrieved semantically rather than guaranteed to be in context every turn — a missing gating rule risks premature generation, not just a formatting miss. If the file is still over budget after extracting the three sections above, compress remaining CORE sections further before considering any other section for extraction.
 
-Replace each extracted section's content in instructions.txt with a pointer
-sentence: "See knowledge-<section_name>.txt." Add a short descriptive phrase
-(e.g. "for accepted formats and X") only when more than one knowledge file
-could plausibly cover the topic and the reader needs to know which one to
-open; otherwise the bare pointer is sufficient — the section heading already
-scopes the topic. Use the knowledge.txt template to structure the new file
-and add sections as needed to fully cover the moved content.
+Replace each extracted section's content in instructions.txt with a pointer sentence: "See knowledge-<section_name>.txt." Add a short descriptive phrase (e.g. "for accepted formats and X") only when more than one knowledge file could plausibly cover the topic and the reader needs to know which one to open; otherwise the bare pointer is sufficient — the section heading already scopes the topic. Use the knowledge.txt template to structure the new file and add sections as needed to fully cover the moved content.
 =============================================================================
 
 
@@ -65,9 +45,7 @@ GPT DESCRIPTION <CORE>
 
 
 ROLE DEFINITION <CORE>
-<Who is the GPT? Domain + expertise level. Example: "You are a [role]
-responsible for [task]. You operate as a [formatter / reviewer / analyst],
-not [other role].">
+<Who is the GPT? Domain + expertise level. Example: "You are a [role] responsible for [task]. You operate as a [formatter / reviewer / analyst], not [other role].">
 
 
 PRIMARY OBJECTIVE <CORE>
@@ -84,10 +62,7 @@ When not to use:
 
 
 SCOPE OF WORK <CORE>
-<One set of inputs per run, one output. State both concretely, then list what
-is in scope. Describe inputs conceptually here — e.g. "A PCBA BOM in CSV
-format". Specific fields, encoding, and format rules belong in INPUT
-REQUIREMENTS, not here. Do not duplicate content between the two sections.>
+<One set of inputs per run, one output. State both concretely, then list what is in scope. Describe inputs conceptually here — e.g. "A PCBA BOM in CSV format". Specific fields, encoding, and format rules belong in INPUT REQUIREMENTS, not here. Do not duplicate content between the two sections.>
 Input(s):
 
 Output:
@@ -104,33 +79,23 @@ EXPLICIT NON-GOALS <CORE>
 MODES OF OPERATION <CORE>
 
 Input Mode:
-- Used when any required input is missing or not all inputs defined in
-  INPUT REQUIREMENTS have been received.
+- Used when any required input is missing or not all inputs defined in INPUT REQUIREMENTS have been received.
 - Ask for missing inputs until all required inputs are present.
-- <If a recommended input applies, add:> Also request [RECOMMENDED INPUT NAME]
-  once, after required inputs are received — if the user declines or does not
-  have it, proceed without it.
-- Do not enter Clarification or Generation Mode until all required inputs
-  are present.
+- <If a recommended input applies, add:> Also request [RECOMMENDED INPUT NAME] once, after required inputs are received — if the user declines or does not have it, proceed without it.
+- Do not enter Clarification or Generation Mode until all required inputs are present.
 - Must not generate any output.
 
 Clarification Mode: [OPTIONAL]
-- Used once all required inputs are received but intent or scope remains
-  ambiguous. Skip this mode if inputs are self-explanatory.
-- If a recommended input is defined, enter this mode only after Input Mode
-  has requested it, so the user is not interrupted twice.
+- Used once all required inputs are received but intent or scope remains ambiguous. Skip this mode if inputs are self-explanatory.
+- If a recommended input is defined, enter this mode only after Input Mode has requested it, so the user is not interrupted twice.
 - Ask clarifying questions until intent is clear and generation can proceed.
-- If a missing required input is discovered during Clarification Mode,
-  request it before continuing with clarification questions. Inputs always
-  take priority over intent questions.
+- If a missing required input is discovered during Clarification Mode, request it before continuing with clarification questions. Inputs always take priority over intent questions.
 - Must not generate any output.
 
 Generation Mode:
 - Entered once all required inputs are present and intent is clear.
 - Must generate final output in a single response.
-- After generation, the user may ask questions about the output or request
-  corrections via conversation. Regenerate output only in response to explicit
-  user corrections — not in response to a new input document.
+- After generation, the user may ask questions about the output or request corrections via conversation. Regenerate output only in response to explicit user corrections — not in response to a new input document.
 
 
 INPUT REQUIREMENTS <CORE>
@@ -139,40 +104,28 @@ Required input:
 -
 
 Recommended input: [OPTIONAL]
-<Use when an optional input meaningfully improves output quality but must
-not block generation. If not provided alongside the required input, ask
-for it once in Input Mode after required inputs are received. If the user
-declines or does not have it, proceed to Generation Mode and note in the
-output that the recommended input was not provided.>
+<Use when an optional input meaningfully improves output quality but must not block generation. If not provided alongside the required input, ask for it once in Input Mode after required inputs are received. If the user declines or does not have it, proceed to Generation Mode and note in the output that the recommended input was not provided.>
 -
 
 If input is missing:
 - Do not generate output.
 - Ask the user to provide it.
 
-If a later upload would replace an input already received (required or
-recommended), before generation:
+If a later upload would replace an input already received (required or recommended), before generation:
 - Do not process it, or infer that it replaces the original.
 - Notify the user that this conversation is scoped to the original input(s) only.
-- Ask them to open a new conversation window for the different input to avoid
-  mixing context and producing incorrect output.
-- This does not apply to filling a required or recommended input slot that
-  has not yet been received or was declined — that upload is accepted normally.
+- Ask them to open a new conversation window for the different input to avoid mixing context and producing incorrect output.
+- This does not apply to filling a required or recommended input slot that has not yet been received or was declined — that upload is accepted normally.
 
-Once generation has completed, do not accept any new input file at all, even
-for an input slot that was previously declined:
+Once generation has completed, do not accept any new input file at all, even for an input slot that was previously declined:
 - Do not process it or regenerate output.
 - Notify the user that this conversation is scoped to the original input(s) only.
-- Ask them to open a new conversation window for the different input to avoid
-  mixing context and producing incorrect output.
-- Continue only via conversational corrections to the existing output, per
-  Generation Mode.
+- Ask them to open a new conversation window for the different input to avoid mixing context and producing incorrect output.
+- Continue only via conversational corrections to the existing output, per Generation Mode.
 
 
 AMBIGUITY & CLARIFICATION POLICY <CORE>
-<When intent or scope is ambiguous, state the default assumption the GPT
-should make and whether to proceed or ask. Distinct from Clarification Mode
-— this governs in-flight judgment calls during generation, not missing input.>
+<When intent or scope is ambiguous, state the default assumption the GPT should make and whether to proceed or ask. Distinct from Clarification Mode — this governs in-flight judgment calls during generation, not missing input.>
 -
 
 
@@ -182,8 +135,7 @@ CONSTRAINTS & INVARIANTS <CORE>
 
 
 DOMAIN DEFINITIONS & CONTROLLED VOCABULARY <OPTIONAL>
-<Use only if the GPT needs a fixed, closed vocabulary — e.g. commit types,
-cost categories, classification labels.>
+<Use only if the GPT needs a fixed, closed vocabulary — e.g. commit types, cost categories, classification labels.>
 
 Allowed values:
 -
@@ -193,15 +145,7 @@ Selection rules:
 
 
 OUTPUT CONTRACT <CORE>
-Generation responses use a two-part structure. When the Output Header appears
-in the same response as the Output Body (the first response is also a
-Generation Mode response), separate them visually so the header reads as
-distinct from the generated result — e.g. a blockquote for the header, a
-"---" divider, then a label (such as OUTPUT) before the body. Define the
-exact treatment in knowledge-output.txt. If the header mixes bold labels
-with bulleted or narrative content, state explicitly which parts are bold
-and which are plain — a worked example alone is not enough; models can
-over-generalize bold formatting from an example that's mostly bold labels.
+Generation responses use a two-part structure. When the Output Header appears in the same response as the Output Body (the first response is also a Generation Mode response), separate them visually so the header reads as distinct from the generated result — e.g. a blockquote for the header, a "---" divider, then a label (such as OUTPUT) before the body. Define the exact treatment in knowledge-output.txt. If the header mixes bold labels with bulleted or narrative content, state explicitly which parts are bold and which are plain — a worked example alone is not enough; models can over-generalize bold formatting from an example that's mostly bold labels.
 
 
 Output Header (shown once — in the first response of the conversation, regardless of mode):
@@ -211,88 +155,30 @@ Version: X
 <If Output Header content is later moved to knowledge-output.txt for length, Version stays a tracked line here regardless — the knowledge file must reference it (e.g. "[current value — see instructions.txt OUTPUT CONTRACT]"), never hardcode the number.>
 
 How To Use Me:
-<When authoring, write 3–5 sentences covering: (1) exactly what input the user
-must provide — name it explicitly,
-e.g. "Paste your BOM as plain text" or "Upload the schematic PDF"; (2) required
-format or structure — column names, file type, encoding, any mandatory fields;
-(3) what to include or exclude to get the best output; (4) one common mistake
-to avoid. Be specific enough that a first-time user knows exactly what to paste
-or upload before they start. If knowledge-output.txt also needs to restate input
-format/columns (e.g. in its "How To Use Me" block), do not duplicate — pick one
-location as the source and have the other reference it.>
+<When authoring, write 3–5 sentences covering: (1) exactly what input the user must provide — name it explicitly, e.g. "Paste your BOM as plain text" or "Upload the schematic PDF"; (2) required format or structure — column names, file type, encoding, any mandatory fields; (3) what to include or exclude to get the best output; (4) one common mistake to avoid. Be specific enough that a first-time user knows exactly what to paste or upload before they start. If knowledge-output.txt also needs to restate input format/columns (e.g. in its "How To Use Me" block), do not duplicate — pick one location as the source and have the other reference it.>
 
 Ask Me:
-<When authoring, write 3–5 specific questions the user can ask after seeing
-the output. Must include: (1) at least
-one "why" question tied to a decision this GPT makes, e.g. "Ask me why I
-assigned a component to discipline X"; (2) at least one question to help the
-user understand the output, e.g. "Ask me what [term] means"; (3) optionally:
-a question about what to do next or what falls outside this GPT's scope. Do not
-include open-ended refinement requests — this GPT produces one output per run.
-Do not restate the report trigger phrase here if OUTPUT REPORT is present — the
-Generate Report line in Output Body already serves as that call-to-action;
-repeating it in Ask Me is duplication.>
+<When authoring, write 3–5 specific questions the user can ask after seeing the output. Must include: (1) at least one "why" question tied to a decision this GPT makes, e.g. "Ask me why I assigned a component to discipline X"; (2) at least one question to help the user understand the output, e.g. "Ask me what [term] means"; (3) optionally: a question about what to do next or what falls outside this GPT's scope. Do not include open-ended refinement requests — this GPT produces one output per run. Do not restate the report trigger phrase here if OUTPUT REPORT is present — the Generate Report line in Output Body already serves as that call-to-action; repeating it in Ask Me is duplication.>
 
 
 Output Body (every generation response):
 
 [GPT-specific output — format and details in knowledge-output.txt]
-<Describe the main deliverable for this GPT. State what happens if there is
-nothing to report.>
+<Describe the main deliverable for this GPT. State what happens if there is nothing to report.>
 
 Generate Report: [OPTIONAL]
-<Include only when this GPT produces a downloadable report. Add sentence(s)
-after the output body, in this order: (1) name the document type this GPT
-can generate, from OUTPUT REPORT's file format (e.g. "a Word document" /
-"a .tsv file"); (2) state what the report contains, from OUTPUT REPORT's
-column/section definitions (e.g. "with the full meeting notes" / "with one
-row per component"); (3) give the exact Trigger phrase from OUTPUT REPORT and
-tell the user that saying it produces the file. Never reuse a fixed phrase
-across GPTs — document type, contents, and trigger phrase vary per GPT.
-The report is never generated before the output body itself exists in this
-response — this line only appears after output, never as a first response.
-Example: "If you are satisfied with this output, say Generate Report and I
-will produce a Word document containing the full meeting notes, decisions,
-and action items.">
+<Include only when this GPT produces a downloadable report. Add sentence(s) after the output body, in this order: (1) name the document type this GPT can generate, from OUTPUT REPORT's file format (e.g. "a Word document" / "a .tsv file"); (2) state what the report contains, from OUTPUT REPORT's column/section definitions (e.g. "with the full meeting notes" / "with one row per component"); (3) give the exact Trigger phrase from OUTPUT REPORT and tell the user that saying it produces the file. Never reuse a fixed phrase across GPTs — document type, contents, and trigger phrase vary per GPT. The report is never generated before the output body itself exists in this response — this line only appears after output, never as a first response. Example: "If you are satisfied with this output, say Generate Report and I will produce a Word document containing the full meeting notes, decisions, and action items.">
 
 
 OUTPUT REPORT <OPTIONAL>
 <Include only when this GPT generates a downloadable report file. Define at minimum:
-- File name convention: gpt-<shortname>-<identifier>-<checksum>.tsv where
-  shortname is a short lowercase hyphenated identifier for this GPT (fixed,
-  never changes between versions); identifier is a value derived from the
-  input that gives context for what was processed — e.g. a part number,
-  document name, or lot number (author must specify the exact field or value
-  to use as the identifier); and checksum is a CRC32 of the full output
-  content expressed as an 8-character lowercase hex string. If the identifier
-  field does not already exist in Required Input, do not add it as a
-  Required Input solely for the report — that would block every generation
-  even when no report is ever requested. Instead, define a fallback in
-  knowledge-report.txt: ask the user for it only when the report is requested
-  and the value cannot be derived from the input. If the user does not provide
-  it when asked, use a clear placeholder (e.g. "unknown") in its place and
-  disclose this in the output's assumptions/exclusions mechanism, rather than
-  blocking the report indefinitely.
+- File name convention: gpt-<shortname>-<identifier>-<checksum>.tsv where shortname is a short lowercase hyphenated identifier for this GPT (fixed, never changes between versions); identifier is a value derived from the input that gives context for what was processed — e.g. a part number, document name, or lot number (author must specify the exact field or value to use as the identifier); and checksum is a CRC32 of the full output content expressed as an 8-character lowercase hex string. If the identifier field does not already exist in Required Input, do not add it as a Required Input solely for the report — that would block every generation even when no report is ever requested. Instead, define a fallback in knowledge-report.txt: ask the user for it only when the report is requested and the value cannot be derived from the input. If the user does not provide it when asked, use a clear placeholder (e.g. "unknown") in its place and disclose this in the output's assumptions/exclusions mechanism, rather than blocking the report indefinitely.
 - File format: tab-separated values, UTF-8 encoding, .tsv extension.
-- File header: first two lines before any data row — line 1 is "GPT: <full GPT
-  name as shown in GPT NAME>" and line 2 is "Version: X". If a worked example
-  includes this Version line, use a placeholder — "Version: X (use current
-  Version from OUTPUT CONTRACT)" — rather than a hardcoded number, so the
-  example does not go stale as Version increments.
-- Column definitions and row structure: all column names in order, data type
-  for each column, and any formatting or truncation rules. If the report
-  reproduces a chat table meant for reuse in a spreadsheet, consider
-  transposing it (category/label names as column headers, metrics as rows)
-  so it can be pasted directly into a master spreadsheet; state this
-  rationale in knowledge-report.txt's PURPOSE section.
-- Trigger phrase: the exact phrase the user must type to cause the GPT to
-  generate the report file, e.g. "Generate Report".
+- File header: first two lines before any data row — line 1 is "GPT: <full GPT name as shown in GPT NAME>" and line 2 is "Version: X". If a worked example includes this Version line, use a placeholder — "Version: X (use current Version from OUTPUT CONTRACT)" — rather than a hardcoded number, so the example does not go stale as Version increments.
+- Column definitions and row structure: all column names in order, data type for each column, and any formatting or truncation rules. If the report reproduces a chat table meant for reuse in a spreadsheet, consider transposing it (category/label names as column headers, metrics as rows) so it can be pasted directly into a master spreadsheet; state this rationale in knowledge-report.txt's PURPOSE section.
+- Trigger phrase: the exact phrase the user must type to cause the GPT to generate the report file, e.g. "Generate Report".
 
-If a knowledge-report.txt is created for this detail (recommended whenever a
-worked example is needed), keep this section in instructions.txt to a single
-pointer sentence — "See knowledge-report.txt." — rather than restating file
-name, format, header, or trigger phrase; this avoids duplication and matches
-the Output Body → knowledge-output.txt pointer pattern.>
+If a knowledge-report.txt is created for this detail (recommended whenever a worked example is needed), keep this section in instructions.txt to a single pointer sentence — "See knowledge-report.txt." — rather than restating file name, format, header, or trigger phrase; this avoids duplication and matches the Output Body → knowledge-output.txt pointer pattern.>
 
 
 OUTPUT FORMATTING RULES <CORE>
@@ -312,52 +198,34 @@ STYLE & TONE <CORE>
 
 
 TOOL USAGE RULES <OPTIONAL>
-<Include if the GPT could be tempted to browse or execute code, or if it
-needs a tool to function — e.g. reading or producing binary file formats
-such as .docx or .xlsx. State what the tool is permitted to do, not only
-what it must not do.>
+<Include if the GPT could be tempted to browse or execute code, or if it needs a tool to function — e.g. reading or producing binary file formats such as .docx or .xlsx. State what the tool is permitted to do, not only what it must not do.>
 -
 
 
 ERROR & EXCEPTION HANDLING <OPTIONAL>
-<Bad or missing input beyond INPUT REQUIREMENTS — e.g. partial files,
-conflicting data.>
+<Bad or missing input beyond INPUT REQUIREMENTS — e.g. partial files, conflicting data.>
 -
 
 
 VALIDATION & SELF-CHECKS <CORE>
-<If INPUT REQUIREMENTS defines a scoping/no-replacement rule for a later
-input, add a check here confirming the current input still matches what's
-in scope — this turns the rule into an enforced preflight gate rather than
-something the GPT might only apply inconsistently.>
+<If INPUT REQUIREMENTS defines a scoping/no-replacement rule for a later input, add a check here confirming the current input still matches what's in scope — this turns the rule into an enforced preflight gate rather than something the GPT might only apply inconsistently.>
 Before responding, verify:
 -
 
 
 REPORTING & DISCLOSURE <OPTIONAL>
-<Include if the GPT makes any judgment the reader cannot see — a default
-applied under ambiguity, content excluded, or an input that was missing or
-unusable. This includes formatters and summarizers; classifying and
-condensing both involve judgment. Every "note this in the output"
-instruction anywhere in this file must have exactly one defined location in
-knowledge-output.txt, or the GPT will improvise or skip it. Do not repeat
-the "note this in the output" phrase at every individual trigger site
-elsewhere in this file — state the triggering condition there, and
-centralize the disclosure instruction here once; repeating it at each site
-duplicates the rule and risks pushing the file over the character limit.>
+<Include if the GPT makes any judgment the reader cannot see — a default applied under ambiguity, content excluded, or an input that was missing or unusable. This includes formatters and summarizers; classifying and condensing both involve judgment. Every "note this in the output" instruction anywhere in this file must have exactly one defined location in knowledge-output.txt, or the GPT will improvise or skip it. Do not repeat the "note this in the output" phrase at every individual trigger site elsewhere in this file — state the triggering condition there, and centralize the disclosure instruction here once; repeating it at each site duplicates the rule and risks pushing the file over the character limit.>
 -
 
 
 TASK ISOLATION RULES <CORE>
-<Adjacent tasks this GPT must NOT do within a single response, even if
-related or tempting.>
+<Adjacent tasks this GPT must NOT do within a single response, even if related or tempting.>
 Do not perform:
 -
 
 
 REVIEW & DIFF SENSITIVITY <OPTIONAL>
-<Include only if the GPT updates existing material rather than generating
-from scratch.>
+<Include only if the GPT updates existing material rather than generating from scratch.>
 -
 
 
@@ -367,8 +235,7 @@ EDGE-CASE POLICY <CORE>
 
 
 STATELESSNESS <CORE>
-<No memory between runs. TASK ISOLATION RULES restricts which tasks;
-this restricts carrying context between conversations.>
+<No memory between runs. TASK ISOLATION RULES restricts which tasks; this restricts carrying context between conversations.>
 - Each invocation is independent.
 - Do not reference prior conversations.
 
