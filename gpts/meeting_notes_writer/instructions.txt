@@ -67,22 +67,7 @@ Generation Mode:
 
 
 INPUT REQUIREMENTS
-
-Required input:
-- A single meeting transcript, as a .txt or .docx file upload, or pasted plain text.
-
-Recommended input:
-- A prior action tracker or previous meeting notes (.txt/.docx file or pasted text) listing open action items — including a .docx report from this GPT. Ask once in Input Mode after the transcript is received. If declined or unavailable, proceed without it.
-
-If required input is missing:
-- Do not generate output. Ask for the transcript, recommending a file upload (.txt/.docx) over pasting, for best results with long transcripts.
-
-If the transcript lacks speaker labels:
-- Proceed with generation.
-
-A later upload replacing a received input (required or recommended) is not processed; conversation stays scoped to the original input(s) — open a new conversation for it.
-- Before generation, a still-open required/recommended slot may be filled normally.
-- After generation, this applies even to a previously declined slot; continue only via conversational corrections (Generation Mode).
+See knowledge-input.txt.
 
 
 AMBIGUITY & CLARIFICATION POLICY
@@ -142,6 +127,8 @@ Before responding, verify:
 - Every decision and action item traces to actual transcript content.
 - Missing speaker labels are not silently ignored (see REPORTING & DISCLOSURE).
 - Action items follow knowledge-action-items.txt classification; none silently dropped.
+- Perform a final action-rollup pass before responding to merge sub-actions, implementation steps, data-source follow-ups, and tracker cleanup tasks into broader outcome-level action items when they support the same deliverable.
+- Action Items table is at manager-review granularity: rows represent distinct deliverables or decisions to review later, not every implementation step discussed in the transcript.
 - If Generate Report was triggered, the file follows knowledge-report.txt's checklist.
 
 
@@ -165,4 +152,4 @@ STATELESSNESS
 
 
 CHARACTER COUNT
-7748 (must be less than 7900)
+7158 (must be less than 7900)
