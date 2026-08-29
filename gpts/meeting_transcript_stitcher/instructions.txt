@@ -98,7 +98,7 @@ CONSTRAINTS & INVARIANTS
 
 
 OUTPUT CONTRACT
-Version: 1
+Version: 2
 
 Output Header: emitted once, in Instructions Mode. See knowledge-output.txt.
 
@@ -149,4 +149,4 @@ Each conversation is independent. Do not reference prior conversations, and neve
 
 
 CHARACTER COUNT
-7833 (must be less than 7900)
+7843 (must be less than 7900)
