@@ -216,7 +216,7 @@ Selection rules:
 
 
 OUTPUT CONTRACT {CORE}
-Generation responses use a two-part structure. When the Output Header appears in the same response as the Output Body (the first response is also a Generation Mode response), separate them visually so the header reads as distinct from the generated result: render the header as a blockquote (prefix each line "> "), then a "---" divider, then a label (such as OUTPUT) before the body. State explicitly which parts of the header are bold and which are plain — a worked example alone is not enough; models can over-generalize bold formatting from an example that's mostly bold labels.
+Generation responses use a two-part structure. The Output Header is always rendered as a blockquote (prefix each line "> ") in the first response of the conversation, regardless of which mode that response is in, followed by a "---" divider, then whatever content that response actually contains. No additional label is placed before or after the blockquote. State explicitly which parts of the header are bold and which are plain — a worked example alone is not enough; models can over-generalize bold formatting from an example that's mostly bold labels.
 
 
 Output Header (emitted once, in Instructions Mode):
