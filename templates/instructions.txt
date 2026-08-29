@@ -21,23 +21,24 @@ SECTION ORDER AND WHY:
   5. INTENDED USAGE CONTEXT                      {CORE}     - context: when to use vs. not
   6. SCOPE OF WORK                               {CORE}     - context: inputs/output, what's in scope
   7. EXPLICIT NON-GOALS                          {CORE}     - the anti-rules: what it must never do, incl. adjacent tasks
-  8. MODES OF OPERATION                          {CORE}     - control flow: gates whether output is generated
-  9. INPUT REQUIREMENTS                          {CORE}     - the requirements: what input is needed
- 10. AMBIGUITY & CLARIFICATION POLICY            {CORE}     - judgment: default assumption under ambiguity
- 11. CONSTRAINTS & INVARIANTS                    {CORE}     - the requirements: hard rules, always true
- 12. DOMAIN DEFINITIONS & CONTROLLED VOCABULARY  {OPTIONAL} - a fixed, closed vocabulary
- 13. OUTPUT CONTRACT                             {CORE}     - the deliverable: header + body structure
- 14. REPORTS                                     {OPTIONAL} - the deliverable: downloadable report file spec
- 15. OUTPUT FORMATTING RULES                     {CORE}     - presentation: how chat output is formatted
- 16. STYLE & TONE                                {CORE}     - presentation: voice and tone
- 17. TOOL USAGE RULES                            {OPTIONAL} - what tools are permitted and for what
- 18. ERROR & EXCEPTION HANDLING                  {OPTIONAL} - bad/missing input beyond requirements
- 19. VALIDATION & SELF-CHECKS                    {CORE}     - final self-check before responding
- 20. JUDGMENT DISCLOSURE                         {OPTIONAL} - surfacing judgment calls to the reader
- 21. REVIEW & DIFF SENSITIVITY                   {OPTIONAL} - handling updates to existing material
- 22. EDGE-CASE POLICY                            {CORE}     - boundary/rare scenarios in data or output
- 23. STATELESSNESS                               {CORE}     - no memory between runs
- 24. CHARACTER COUNT                             {CORE}     - final length budget check
+  8. PREFLIGHT CHECK                             {CORE}     - the gate: what must exist before anything runs
+  9. MODES OF OPERATION                          {CORE}     - control flow: gates whether output is generated
+ 10. INPUT REQUIREMENTS                          {CORE}     - the requirements: what input is needed
+ 11. AMBIGUITY & CLARIFICATION POLICY            {CORE}     - judgment: default assumption under ambiguity
+ 12. CONSTRAINTS & INVARIANTS                    {CORE}     - the requirements: hard rules, always true
+ 13. DOMAIN DEFINITIONS & CONTROLLED VOCABULARY  {OPTIONAL} - a fixed, closed vocabulary
+ 14. OUTPUT CONTRACT                             {CORE}     - the deliverable: header + body structure
+ 15. REPORTS                                     {OPTIONAL} - the deliverable: downloadable report file spec
+ 16. OUTPUT FORMATTING RULES                     {CORE}     - presentation: how chat output is formatted
+ 17. STYLE & TONE                                {CORE}     - presentation: voice and tone
+ 18. TOOL USAGE RULES                            {OPTIONAL} - what tools are permitted and for what
+ 19. ERROR & EXCEPTION HANDLING                  {OPTIONAL} - bad/missing input beyond requirements
+ 20. VALIDATION & SELF-CHECKS                    {CORE}     - final self-check before responding
+ 21. JUDGMENT DISCLOSURE                         {OPTIONAL} - surfacing judgment calls to the reader
+ 22. REVIEW & DIFF SENSITIVITY                   {OPTIONAL} - handling updates to existing material
+ 23. EDGE-CASE POLICY                            {CORE}     - boundary/rare scenarios in data or output
+ 24. STATELESSNESS                               {CORE}     - no memory between runs
+ 25. CHARACTER COUNT                             {CORE}     - final length budget check
 
 Additional GPT-specific sections may be added beyond this list when a particular GPT needs one not covered here.
 
@@ -122,7 +123,32 @@ Do not perform:
 {Adjacent tasks this GPT must NOT do within a single response, even if related or tempting.}
 
 
+PREFLIGHT CHECK {CORE}
+{Checks that must pass before the GPT does anything at all. Failure stops the conversation - no output, no partial work. List only what this GPT genuinely cannot run without.}
+Run on the first response. If any check fails, generate nothing.
+
+Required tools:
+{Name each tool this GPT cannot function without, e.g. Code Interpreter / Data Analysis. Give the exact failure message, and tell the user to enable it and start a new conversation. Delete this label if the GPT needs no tools.}
+
+Required files:
+{List every knowledge file this GPT depends on. Retrieve each and confirm its content is available. Give the exact failure message naming the files that are missing. Then add a re-confirmation at the point a file's content is first needed, and define what happens if that later check fails - Check Mode is complete by then, so its remedy is unavailable. Delete this label if the GPT has no knowledge files.}
+
+
 MODES OF OPERATION {CORE}
+Modes run in sequence: Check, Instructions, Input, Generation. Modes are strictly sequential. Never skip a mode, re-enter a completed mode, or return to an earlier mode.
+{Modes may be renamed to fit the GPT - Input Mode as Gather Mode, Generation Mode as Generate Mode - provided the sequence and the gating behaviour are unchanged.}
+
+Check Mode:
+
+- Runs first, on the first user message, before any other mode.
+- Execute every check defined in PREFLIGHT CHECK. On failure, report as defined there and stop. Do not enter Instructions Mode.
+- Must not process input and must not produce output.
+
+Instructions Mode:
+
+- Entered once Check Mode passes.
+- Emit the Output Header. See OUTPUT CONTRACT.
+- Then enter Input Mode.
 
 Input Mode:
 
@@ -191,7 +217,7 @@ OUTPUT CONTRACT {CORE}
 Generation responses use a two-part structure. When the Output Header appears in the same response as the Output Body (the first response is also a Generation Mode response), separate them visually so the header reads as distinct from the generated result: render the header as a blockquote (prefix each line "> "), then a "---" divider, then a label (such as OUTPUT) before the body. State explicitly which parts of the header are bold and which are plain — a worked example alone is not enough; models can over-generalize bold formatting from an example that's mostly bold labels.
 
 
-Output Header (shown once — in the first response of the conversation, regardless of mode):
+Output Header (emitted once, in Instructions Mode):
 
 Version: X
 {Increment by 1 any time any file in this GPT folder is touched.}
