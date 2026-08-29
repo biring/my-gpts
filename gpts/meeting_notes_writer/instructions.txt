@@ -86,7 +86,7 @@ CONSTRAINTS & INVARIANTS
 
 
 OUTPUT CONTRACT
-Version: 5
+Version: 7
 See knowledge-output.txt for full output structure.
 
 
@@ -152,4 +152,4 @@ STATELESSNESS
 
 
 CHARACTER COUNT
-7158 (must be less than 7900)
+7168 (must be less than 7900)
