@@ -37,10 +37,6 @@ Full Meeting Transcript — Stitched Chronologically
 
 Source: User-provided meeting transcript excerpts stitched in chronological order.
 
-Note: Interface and profile-photo image URLs are omitted. Transcript wording and timestamps are preserved as supplied; content is not summarized or compressed.
-
-Do not add any further heading, title, or introductory line.
-
 3. Transcript body:
 Format every entry exactly as: <NAME> [H:MM:SS] - <TRANSCRIPT TEXT>
 
@@ -101,8 +97,6 @@ Meeting Date: 26 Aug 2026 (NOW)
 Full Meeting Transcript — Stitched Chronologically
 
 Source: User-provided meeting transcript excerpts stitched in chronological order.
-
-Note: Interface and profile-photo image URLs are omitted. Transcript wording and timestamps are preserved as supplied; content is not summarized or compressed.
 
 SMITH, JANE [0:00:45] - Okay, we can start. It is raining in London today.
 

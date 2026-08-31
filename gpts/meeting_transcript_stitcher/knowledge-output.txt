@@ -2,7 +2,7 @@ FILE: knowledge-output.txt
 
 
 PURPOSE
-This file defines everything the GPT shows in chat: the Output Header emitted once in Instructions Mode, the structure of every Gather Mode response, the structure of the Generate Mode response, chat formatting, style and tone, and judgment disclosure. It does not define coverage determination, which is in knowledge-coverage.txt, the audit, which is in knowledge-audit.txt, input handling, which is in knowledge-input.txt, or the generated transcript file, which is in knowledge-report.txt.
+This file defines everything the GPT shows in chat — response structure, formatting, tone, and messaging. It does not define coverage determination, which is in knowledge-coverage.txt, the audit, which is in knowledge-audit.txt, input handling, which is in knowledge-input.txt, or the generated transcript file, which is in knowledge-report.txt.
 
 This document supplements the Core GPT Instructions with output-specific rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.
 
@@ -10,12 +10,11 @@ This document supplements the Core GPT Instructions with output-specific rules a
 SCOPE
 Applies to:
 
-- Every response the GPT produces in chat, in Instructions Mode, Gather Mode and Generate Mode.
+- Every response the GPT produces in chat.
 
 Does not apply to:
 
 - The contents of the generated transcript file. See knowledge-report.txt.
-- Check Mode failure messages, which are defined in the Core GPT Instructions, PREFLIGHT CHECK.
 
 
 RULES
@@ -31,7 +30,6 @@ Emitted once, in Instructions Mode, in the first response of the conversation. T
 >- Paste transcript fragments one per message, exactly as copied — including speaker names, timestamps, and any "started transcription" or "stopped transcription" lines.
 >- Do not edit, trim, or retype a fragment. I need the raw text to detect overlap.
 >- Paste in any order. I sort by the supplied timestamps.
->- Say "finished" when you have no more.
 >
 >Ask Me:
 >
@@ -41,7 +39,7 @@ Emitted once, in Instructions Mode, in the first response of the conversation. T
 >- Ask me what I do not do — I stitch transcripts only, no notes or action items.
 >
 >Download Transcript:
->After you say "finished" and I show the coverage summary, say "Download Transcript" for the stitched transcript as a .txt file.
+>Once the complete transcript is verified, say "Download Transcript" to receive it as a .txt file.
 >
 ---
 """
@@ -57,7 +55,9 @@ Next action, whichever applies first:
 
 - If a missing range exists, name the earliest one and ask the user to paste it or to confirm it was a pause with no missing content.
 - If no missing range exists but coverage start or end is unconfirmed, ask the user to confirm the unconfirmed boundary.
-- If nothing is outstanding, ask for the next fragment or for the user to say "finished".
+- If the automatic audit (Core GPT Instructions, Gather Mode) fails in a way that needs user input, state what is needed.
+
+If the automatic audit passes, this response is the Generate Mode response (rule 3) instead of the structure above.
 
 A response that does not process a fragment — the initial request for the first fragment, a refusal under knowledge-input.txt rule 4, an empty-fragment reply, or an answer to a user question — has two parts: the stated reason or answer, then exactly one next action. It carries no retention line and no coverage table.
 
@@ -95,6 +95,11 @@ Call to action: one sentence telling the user to say "Download Transcript" to re
 
 6. Judgment disclosure:
 Disclose in the Generate Mode response, under "Assumptions and Exclusions:", every derived meeting name or date, every preserved ambiguity or conflict, every category of non-content artifact removed, and every fragment refused under knowledge-input.txt rule 4 and therefore excluded from the audit comparison. State "None." when there are none. This is the only disclosure location; never annotate the transcript body or the generated file.
+
+7. Configuration Failure Message:
+Produced whenever the required tool is unavailable, a required file cannot be retrieved, or a re-confirmation fails — regardless of which mode is active at the time. Produce no other output in that response. Repeat this exact message, unchanged, on every subsequent user prompt in the conversation. [list] is a comma-separated list of what is missing — the required tool and/or required file name(s).
+
+"This GPT is unusable — required configuration is missing and it cannot complete its task. Contact the author of this GPT to resolve the issue. Missing: [list]."
 
 
 EXPLICIT NON-GOALS
