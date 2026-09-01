@@ -67,6 +67,7 @@ Example: gpt-meeting_transcript-london_weather_sync-260826-a1b2c3d4.txt
 6. File creation and handoff:
 
 - Create the file only when the user says "Download Transcript".
+- Build the file content from the stitched, audited transcript already held in this conversation, and pass that content directly into the Code Interpreter script as literal text — Code Interpreter is never expected to independently access, retrieve, or verify the source fragments.
 - Write it as plain text, UTF-8, using Code Interpreter.
 - After the file is successfully created, present the download, then output exactly: You may use the 'Meeting Notes Writer [PCBA CoE]' GPT to generate meeting notes from this transcript.
 - Never output that line before the file exists.

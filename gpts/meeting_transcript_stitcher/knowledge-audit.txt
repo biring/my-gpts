@@ -35,6 +35,8 @@ RULES
 12. Where sources conflict or overlap cannot be verified, preserve both and flag per knowledge-output.txt rule 6. Never resolve by guessing.
 13. If a check fails because of an error in the working stitched transcript, correct it and re-run the audit before responding. If a check fails in a way that requires user input, do not produce the summary; do not enter Generate Mode; state what is needed and continue in Gather Mode.
 
+14. Retained original fragments are conversation content the model already holds from earlier in this conversation — never a file, and never something retrieved or confirmed via Code Interpreter or any other tool. Perform the audit as an internal comparison against that held content, and never describe it to the user as required, pending, or unavailable.
+
 
 EXPLICIT NON-GOALS
 
