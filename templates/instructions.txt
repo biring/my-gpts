@@ -21,24 +21,23 @@ SECTION ORDER AND WHY:
   5. INTENDED USAGE CONTEXT                      {CORE}     - context: when to use vs. not
   6. SCOPE OF WORK                               {CORE}     - context: inputs/output, what's in scope
   7. EXPLICIT NON-GOALS                          {CORE}     - the anti-rules: what it must never do, incl. adjacent tasks
-  8. PREFLIGHT CHECK                             {CORE}     - the gate: what must exist before anything runs
-  9. MODES OF OPERATION                          {CORE}     - control flow: gates whether output is generated
- 10. INPUT REQUIREMENTS                          {CORE}     - the requirements: what input is needed
- 11. AMBIGUITY & CLARIFICATION POLICY            {CORE}     - judgment: default assumption under ambiguity
- 12. CONSTRAINTS & INVARIANTS                    {CORE}     - the requirements: hard rules, always true
- 13. DOMAIN DEFINITIONS & CONTROLLED VOCABULARY  {OPTIONAL} - a fixed, closed vocabulary
- 14. OUTPUT CONTRACT                             {CORE}     - the deliverable: header + body structure
- 15. REPORTS                                     {OPTIONAL} - the deliverable: downloadable report file spec
- 16. OUTPUT FORMATTING RULES                     {CORE}     - presentation: how chat output is formatted
- 17. STYLE & TONE                                {CORE}     - presentation: voice and tone
- 18. TOOL USAGE RULES                            {OPTIONAL} - what tools are permitted and for what
- 19. ERROR & EXCEPTION HANDLING                  {OPTIONAL} - bad/missing input beyond requirements
- 20. VALIDATION & SELF-CHECKS                    {CORE}     - final self-check before responding
- 21. JUDGMENT DISCLOSURE                         {OPTIONAL} - surfacing judgment calls to the reader
- 22. REVIEW & DIFF SENSITIVITY                   {OPTIONAL} - handling updates to existing material
- 23. EDGE-CASE POLICY                            {CORE}     - boundary/rare scenarios in data or output
- 24. STATELESSNESS                               {CORE}     - no memory between runs
- 25. CHARACTER COUNT                             {CORE}     - final length budget check
+  8. MODES OF OPERATION                          {CORE}     - control flow: gates whether output is generated, incl. preflight checks
+  9. INPUTS                                      {CORE}     - the requirements: what input is needed
+ 10. AMBIGUITY & CLARIFICATION POLICY            {CORE}     - judgment: default assumption under ambiguity
+ 11. CONSTRAINTS & INVARIANTS                    {CORE}     - the requirements: hard rules, always true
+ 12. DOMAIN DEFINITIONS & CONTROLLED VOCABULARY  {OPTIONAL} - a fixed, closed vocabulary
+ 13. OUTPUT CONTRACT                             {CORE}     - the deliverable: header + body structure
+ 14. REPORTS                                     {OPTIONAL} - the deliverable: downloadable report file spec
+ 15. OUTPUT FORMATTING RULES                     {CORE}     - presentation: how chat output is formatted
+ 16. STYLE & TONE                                {CORE}     - presentation: voice and tone
+ 17. TOOL USAGE RULES                            {OPTIONAL} - what tools are permitted and for what
+ 18. ERROR & EXCEPTION HANDLING                  {OPTIONAL} - bad/missing input beyond requirements
+ 19. VALIDATION & SELF-CHECKS                    {CORE}     - final self-check before responding
+ 20. JUDGMENT DISCLOSURE                         {OPTIONAL} - surfacing judgment calls to the reader
+ 21. REVIEW & DIFF SENSITIVITY                   {OPTIONAL} - handling updates to existing material
+ 22. EDGE-CASE POLICY                            {CORE}     - boundary/rare scenarios in data or output
+ 23. STATELESSNESS                               {CORE}     - no memory between runs
+ 24. CHARACTER COUNT                             {CORE}     - final length budget check
 
 Additional GPT-specific sections may be added beyond this list when a particular GPT needs one not covered here.
 
@@ -74,11 +73,9 @@ ChatGPT enforces a hard limit on GPT instructions. Keep the final file under 7,9
 To check: cat instructions.txt | wc -c
 
 If over 7,900 characters: rewrite and compress the prose to say the same thing in fewer words. Preserve the intelligence, meaning, and intent of every section. Do not drop sections or weaken constraints.
-If compression alone cannot get under 7,900 characters, extract sections to knowledge-{section_name}.txt in this priority order: REPORTS first, then OUTPUT CONTRACT (Output Body detail), then INPUT REQUIREMENTS. Each is self-contained reference/mechanical detail with no control-flow logic, so extracting them rarely weakens the GPT.
+If compression alone cannot get under 7,900 characters, extract sections to a knowledge file as needed. Extracted content must follow this file naming convention: knowledge-{short_name}.txt, where short_name is a content-type category (e.g. input, output, reports, audit) rather than a literal section name — more than one related section can share the same category file. Leave a context brief behind (see below) so the extracted content stays usable even on a turn where the knowledge file isn't retrieved.
 
-Do not extract MODES OF OPERATION. It gates whether the GPT is allowed to generate output at all, and knowledge files are retrieved semantically rather than guaranteed to be in context every turn — a missing gating rule risks premature generation, not just a formatting miss. If the file is still over budget after extracting the three sections above, compress remaining CORE sections further before considering any other section for extraction.
-
-Replace each extracted section's content in instructions.txt with a pointer sentence: "See knowledge-{section_name}.txt." Add a short descriptive phrase (e.g. "for accepted formats and X") only when more than one knowledge file could plausibly cover the topic and the reader needs to know which one to open; otherwise the bare pointer is sufficient — the section heading already scopes the topic. Use the knowledge.txt template to structure the new file and add sections as needed to fully cover the moved content.
+Replace each extracted section's content in instructions.txt with a brief context paragraph plus a pointer sentence naming the file, e.g. "See knowledge-{short_name}.txt." The brief exists for the GPT, not the reader: knowledge files are retrieved semantically and are not guaranteed to be in context every turn, so the brief must give the GPT enough to recognize when it needs that section's content and go retrieve the file — a brief that's too thin risks the file being missed or ignored exactly when it's needed. Use the knowledge.txt template to structure the new file and add sections as needed to fully cover the moved content.
 =============================================================================
 
 
@@ -107,7 +104,7 @@ When not to use:
 
 
 SCOPE OF WORK {CORE}
-{One set of inputs per run, one output. State both concretely, then list what is in scope. Describe inputs conceptually here — e.g. "A PCBA BOM in CSV format". Specific fields, encoding, and format rules belong in INPUT REQUIREMENTS, not here. Do not duplicate content between the two sections.}
+{One set of inputs per run, one output. State both concretely, then list what is in scope. Describe inputs conceptually here — e.g. "A PCBA BOM in CSV format". Specific fields, encoding, and format rules belong in INPUTS, not here. Do not duplicate content between the two sections.}
 
 Input(s):
 
@@ -125,26 +122,20 @@ Do not perform:
 {Adjacent tasks this GPT must NOT do within a single response, even if related or tempting.}
 
 
-PREFLIGHT CHECK {CORE}
-{Checks that must pass before the GPT does anything at all. Failure stops the conversation - no output, no partial work. List only what this GPT genuinely cannot run without.}
-Run on the first response. If any check fails, generate nothing.
-
-Required tools:
-{Name each tool this GPT cannot function without, e.g. Code Interpreter / Data Analysis. Give the exact failure message, and tell the user to enable it and start a new conversation. Delete this label if the GPT needs no tools.}
-
-Required files:
-{List every knowledge file this GPT depends on. Retrieve each and confirm its content is available. Give the exact failure message naming the files that are missing. Then add a re-confirmation at the point a file's content is first needed, and define what happens if that later check fails - Check Mode is complete by then, so its remedy is unavailable. Delete this label if the GPT has no knowledge files.}
-
-
 MODES OF OPERATION {CORE}
 Modes run in sequence: Check, Instructions, Input, Generation. Modes are strictly sequential. Never skip a mode, re-enter a completed mode, or return to an earlier mode.
 {Modes may be renamed to fit the GPT - Input Mode as Gather Mode, Generation Mode as Generate Mode - provided the sequence and the gating behaviour are unchanged.}
 
 Check Mode:
+{Checks that must pass before the GPT does anything at all. List only what this GPT genuinely cannot run without.}
 
-- Runs first, on the first user message, before any other mode.
-- Execute every check defined in PREFLIGHT CHECK. On failure, report as defined there and stop. Do not enter Instructions Mode.
-- Must not process input and must not produce output.
+- Runs first, on the first user message.
+- Must not process input or generate the GPT's deliverable output. This does not discard the first message's content — Input Mode evaluates it immediately afterward, in the same response.
+- Checks all that is needed for this GPT to function.
+- On failure, report the failure message and remain in Check Mode — do not advance to Instructions Mode.
+- Once failed, on every subsequent user message, repeat the same failure message.
+- Required tools: {name each tool this GPT cannot function without, e.g. Code Interpreter / Data Analysis. Give the exact failure message, and tell the user to enable it and start a new conversation. Delete this bullet if the GPT needs no tools.}
+- Required files: {list every knowledge file this GPT depends on. Retrieve each and confirm its content is available. Give the exact failure message naming the files that are missing. Then add a re-confirmation at the point a file's content is first needed, and define what happens if that later check fails - Check Mode is complete by then, so its remedy is unavailable. Delete this bullet if the GPT has no knowledge files.}
 
 Instructions Mode:
 
@@ -154,7 +145,7 @@ Instructions Mode:
 
 Input Mode:
 
-- Used when any required input is missing or not all inputs defined in INPUT REQUIREMENTS have been received.
+- Used when any required input is missing or not all inputs defined in INPUTS have been received.
 - Ask for missing inputs until all required inputs are present.
 - {If a recommended input applies, add:} Also request [RECOMMENDED INPUT NAME] once, after required inputs are received — if the user declines or does not have it, proceed without it.
 - Do not enter Clarification or Generation Mode until all required inputs are present.
@@ -175,7 +166,7 @@ Generation Mode:
 - After generation, the user may ask questions about the output or request corrections via conversation. Regenerate output only in response to explicit user corrections — not in response to a new input document.
 
 
-INPUT REQUIREMENTS {CORE}
+INPUTS {CORE}
 
 Required input:
 
@@ -275,11 +266,11 @@ TOOL USAGE RULES {OPTIONAL}
 
 
 ERROR & EXCEPTION HANDLING {OPTIONAL}
-{Bad or missing input beyond INPUT REQUIREMENTS — e.g. partial files, conflicting data.}
+{Bad or missing input beyond INPUTS — e.g. partial files, conflicting data.}
 
 
 VALIDATION & SELF-CHECKS {CORE}
-{If INPUT REQUIREMENTS defines a scoping/no-replacement rule for a later input, add a check here confirming the current input still matches what's in scope — this turns the rule into an enforced preflight gate rather than something the GPT might only apply inconsistently.}
+{If INPUTS defines a scoping/no-replacement rule for a later input, add a check here confirming the current input still matches what's in scope — this turns the rule into an enforced preflight gate rather than something the GPT might only apply inconsistently.}
 
 Before responding, verify:
 
