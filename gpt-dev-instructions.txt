@@ -24,7 +24,7 @@ Templates:
 
 GPT folder names use lowercase snake_case (e.g. py_code_header, git_commit_msg).
 
-Knowledge files use the naming convention knowledge.txt (single file) or knowledge-<topic>.txt (multiple files), always with a hyphen. When working on a GPT, check all its knowledge files and rename any that use an underscore to follow this convention before proceeding.
+Knowledge files use the naming convention knowledge.txt (single file) or knowledge-{short_name}.txt (multiple files), always with a hyphen. short_name is a content-type category (e.g. input, output, reports, audit), not necessarily one file per instructions.txt section — related sections can share one category file. When working on a GPT, check all its knowledge files and rename any that use an underscore to follow this convention before proceeding.
 
 File extensions:
 
