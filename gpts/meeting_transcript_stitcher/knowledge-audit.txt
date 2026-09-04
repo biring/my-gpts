@@ -14,7 +14,7 @@ Applies to:
 
 Does not apply to:
 
-- Per-fragment coverage tracking. See knowledge-coverage.txt.
+- Defining what counts as coverage or a gap (per-fragment coverage tracking). See knowledge-coverage.txt. This file's own independent verification of that determination, as an audit safety gate, does not redefine it.
 - The per-response checks in the Core GPT Instructions, VALIDATION & SELF-CHECKS, which run on every response.
 - Construction of the transcript file. See knowledge-report.txt.
 
@@ -23,7 +23,7 @@ RULES
 
 1. Audit against every original fragment, not against the working stitched transcript alone. A fragment that was refused as input is retained as source but excluded from the comparison; disclose that exclusion to the user.
 
-2. Confirm every entry in the original fragments appears exactly once in the working stitched transcript, and that no entry exists in the stitched transcript that isn't in an original fragment.
+2. [ALGORITHM] Confirm entry-level completeness and fidelity as follows. Extract every dialogue entry from every retained fragment as a (speaker, timestamp, text) tuple — the source set, excluding any fragment refused as input and excluding boundary flags and other non-content artifacts. Extract the same tuple set from the working stitched transcript. Verify a one-to-one correspondence between the two sets, with verified duplicate-overlap removal as the only permitted many-to-one reduction. Flag any source entry with no match in the stitched transcript as missing. Flag any stitched entry with no match in the source as fabricated. Either flag fails the audit.
 
 3. Confirm every entry's wording, speaker attribution, and timestamp match its original fragment exactly. Display conversion changes a timestamp's format only, never its value.
 
@@ -35,13 +35,18 @@ RULES
 
 7. Confirm the transcript body contains dialogue entries only.
 
-8. Confirm no missing range remains.
+8. [ALGORITHM] Confirm no missing range remains by independently reconstructing coverage from every retained, accepted fragment — sort all fragment ranges by start timestamp and inspect every adjacent pair — rather than relying on knowledge-coverage.txt's most recently reported result as evidence. If this independent reconstruction finds a gap that the reported coverage did not, the audit fails.
 
 9. Where sources conflict or overlap cannot be verified, preserve both and flag them for the user. Never resolve by guessing — for example, by preferring the longer, later, or more fluent version.
 
-10. The audit produces one of three outcomes: it passes; it finds a mistake in the stitched transcript, which is corrected internally using the original fragments already held, and the audit is re-run; or it fails because information is missing or ambiguous, in which case no summary is produced and the reason is stated to the user.
+10. The audit produces one of three outcomes:
+(a) Pass — all checks succeed.
+(b) Internal correction — a mistake is found in the stitched transcript. It is corrected internally using the original fragments already held. The full audit, including the independent continuity reconstruction, is re-run.
+(c) Fail — information is missing or ambiguous. No summary is produced. The reason is stated to the user.
 
 11. Original fragments are conversation content the model already holds from earlier in this conversation — never a file, and never something retrieved or confirmed via Code Interpreter or any other tool. Perform the audit as an internal comparison against that held content, and never describe it to the user as required, pending, or unavailable.
+
+12. [INVARIANT] Entry-level fidelity (every entry preserved, accurate, and in order) does not by itself establish temporal completeness, and temporal completeness does not by itself establish entry-level fidelity. A PASS outcome requires both to hold independently; if either fails, the audit does not pass.
 
 
 EXPLICIT NON-GOALS
