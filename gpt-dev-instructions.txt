@@ -50,6 +50,8 @@ Always confirm with the user which gpt_name we will be working on.
 GPT DESIGN CONSTRAINT
 Most GPTs take one or more input files and produce one output in a single deterministic response. A GPT may be multi-turn where the input genuinely cannot be supplied at once - input arriving in fragments across messages - in which case MODES OF OPERATION gates when generation is allowed and the mode sequence is what keeps it deterministic. No chained tasks and no GPT-to-GPT dependencies in either case. This constraint is already encoded in templates/instructions.txt (Scope of Work, Modes of Operation) - do not design around it.
 
+CROSS-FILE RESPONSIBILITY: when behavior spans instructions.txt and one or more knowledge files, give each file one clearly defined responsibility - SCOPE's 'Applies to / Does not apply to' already requires this. Avoid requiring one file to infer another file's output. For a critical or high-consequence gate (e.g. a mode transition that triggers file generation or delivery to the user), the downstream check should independently re-verify rather than simply trust an upstream file's self-reported result. Use templates/knowledge.txt's ALGORITHM / REQUIRED CHECK and INVARIANTS sections to encode the independent check; do not have the downstream file redefine the upstream file's rules - only re-verify against them.
+
 
 WORKFLOW
 Step 1 (Build) through Step 5 (Critical Check) operate on drafts only - no file under {workspace}\gpts\<gpt_name>, {workspace}\templates, or gpt-dev-instructions.txt is created or modified until Step 6 (Write) confirms it in writing.
@@ -67,6 +69,8 @@ Step 3 - Audit: Run a full check against all template (instructions and knowledg
 - Errors: anything incorrect, inconsistent, or broken
 - References: every pointer from one file or section to another resolves to something that exists
 - Reachability: every state the GPT can be in has a defined next action, and no rule requires returning to a step already completed
+- Determinism: any rule requiring calculation, ordering, comparison, reconciliation, or exhaustive checking that is stated only as prose, with no explicit procedure. See templates/knowledge.txt's ALGORITHM / REQUIRED CHECK section.
+- Readability: any rule stated as one long compound sentence that should be split into short, explicit clauses or numbered/lettered sub-parts, especially for multi-condition or multi-outcome rules.
 Present the complete list to the user before making any changes. For a revision to an already-shipped GPT (Step 6 (Write) previously completed), scope the audit to the changed content and its interactions with the rest of the file(s), rather than re-auditing unchanged, previously-approved baseline content.
 
 Step 4 - Resolve: Review each numbered item with the user. Apply only approved changes.
@@ -83,7 +87,7 @@ Review the finished GPT against templates/instructions.txt and templates/knowled
 - Revise: any existing template content that should be updated based on what was learned
 - Remove: any template content that proved unnecessary or harmful
 
-If changes are identified, update the local template files directly under {workspace}\templates, using the same [CORE] / [OPTIONAL] tagging and inline comment style already used in the templates. Recommend each change to the user explicitly - what was changed and why it came from this GPT. If nothing new was needed, say so rather than skipping the step silently.
+If changes are identified, update the local template files directly under {workspace}\templates, using the same {CORE} / {OPTIONAL} tagging and inline comment style already used in the templates. Recommend each change to the user explicitly - what was changed and why it came from this GPT. If nothing new was needed, say so rather than skipping the step silently.
 
 Step 8 - Project Instructions Improvement: Runs only after Step 7 (Lessons Learned) completes. Review this session's process against gpt-dev-instructions.txt (the project instructions) itself for:
 
