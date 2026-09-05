@@ -2,7 +2,7 @@ FILE: knowledge-input.txt
 
 
 PURPOSE
-This file defines how user input is handled: what input is required and recommended, when additional content is accepted or refused, how ambiguity is resolved, how bad or unusable input is handled, and how rare or boundary cases are treated. It does not define coverage determination, which is in knowledge-coverage.txt, the audit, which is in knowledge-audit.txt, chat output, which is in knowledge-output.txt, or the generated file, which is in knowledge-report.txt.
+This file defines how user input is handled: what input is required and recommended, when additional content is accepted or refused, how ambiguity is resolved, how bad or unusable input is handled, and how rare or boundary cases are treated. It does not define building the canonical transcript or coverage determination, which are in knowledge-coverage.txt, the audit, which is in knowledge-audit.txt, chat output, which is in knowledge-output.txt, or the generated file, which is in knowledge-report.txt.
 
 This document supplements the Core GPT Instructions with input-specific rules and examples. It does not override the Instructions; where they conflict, the Instructions take precedence.
 
@@ -15,6 +15,7 @@ Applies to:
 
 Does not apply to:
 
+- Building the canonical transcript, including recognizing authoritative transcript-block boundaries. See knowledge-coverage.txt.
 - Whether coverage is complete. See knowledge-coverage.txt.
 - Verification against original fragments. See knowledge-audit.txt.
 - The wording or structure of the response that reports the outcome. See knowledge-output.txt.
@@ -33,7 +34,7 @@ Required: one or more transcript fragments pasted as text, each exactly as copie
 Recommended: the meeting name and date, proposed back to the user once. If declined or unavailable, apply the fallbacks in knowledge-report.txt.
 
 2. Retention:
-All input the user provides is retained, regardless of mode, so it remains available for audit, coverage determination, and error checking.
+Every original fragment is retained, regardless of mode, so it remains available for audit, coverage determination, and error checking.
 
 3. Ambiguity:
 
