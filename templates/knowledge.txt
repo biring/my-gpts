@@ -15,13 +15,17 @@ Core sections {CORE} apply to every knowledge file. Optional sections {OPTIONAL}
 SECTION ORDER AND WHY:
   1. PURPOSE                               {CORE}     - context: what, why
   2. SCOPE                                 {CORE}     - context: when
-  3. RULES                                 {OPTIONAL} - the requirements, when this file states enforceable constraints
-  4. NAMING CONVENTIONS                    {OPTIONAL} - a specific sub-rule
-  5. EXPLICIT NON-GOALS                    {CORE}     - the anti-rules, specific to this file's own domain
-  6. AMBIGUITY & CLARIFICATION POLICY      {OPTIONAL} - resolving judgment calls
-  7. STABLE-CONTENT CRITERIA               {OPTIONAL} - gate before generating
-  8. EXAMPLE 1+                            {OPTIONAL} - what applying this file's content looks like, when useful
-  9. VALIDATION & SELF-CHECKS              {CORE}     - final self-check
+  3. TERMS AND DEFINITIONS                 {OPTIONAL} - context: terms scoped to this file's own content
+  4. RULES                                 {OPTIONAL} - the requirements, when this file states enforceable constraints
+  5. ALGORITHM / REQUIRED CHECK            {OPTIONAL} - the procedure, when a rule requires calculation or exhaustive checking
+  6. NAMING CONVENTIONS                    {OPTIONAL} - a specific sub-rule
+  7. INVARIANTS                            {OPTIONAL} - conditions that must always remain true
+  8. PASS/FAIL CONDITIONS                  {OPTIONAL} - the gate before a mode transition or go/no-go decision
+  9. EXPLICIT NON-GOALS                    {CORE}     - the anti-rules, specific to this file's own domain
+ 10. AMBIGUITY & CLARIFICATION POLICY      {OPTIONAL} - resolving judgment calls
+ 11. STABLE-CONTENT CRITERIA               {OPTIONAL} - gate before generating
+ 12. EXAMPLE 1+                            {OPTIONAL} - what applying this file's content looks like, when useful
+ 13. VALIDATION & SELF-CHECKS              {CORE}     - final self-check
 
 Additional sections may be added beyond this list when a particular knowledge file needs one not covered here.
 
@@ -69,12 +73,28 @@ Applies to:
 Does not apply to:
 
 
+TERMS AND DEFINITIONS {OPTIONAL}
+{Use when this file introduces terms whose specific interpretation affects downstream behavior, and that interpretation is specific to this knowledge file's own scope. If a term applies across the whole GPT or is shared by more than one knowledge file, define it once in instructions.txt's TERMS AND DEFINITIONS section instead and reference it from here rather than redefining it. List entries alphabetically, one per line, as "word or phrase: meaning".}
+
+
 RULES {OPTIONAL}
 {Include when this file states enforceable constraints specific to its content — e.g. a standalone domain-rules file, or constraints added on top of extracted spec content. Omit for files that are purely descriptive or reference content (e.g. an extracted REPORTS or INPUTS section) with nothing to enforce beyond what's already stated there. Each rule is a MUST by default - no "Must:" label needed. Use a flat or numbered list; number items if they need to be referenced elsewhere (e.g. from the checklist). Negative constraints ("do not...") belong in EXPLICIT NON-GOALS below, not here.}
 
 
+ALGORITHM / REQUIRED CHECK {OPTIONAL}
+{Use when correct behavior requires calculation, ordering, comparison, reconciliation, state transition, or exhaustive checking. A rule states WHAT must be true; an algorithm states HOW the GPT establishes that it is true — inputs, the transformation/check sequence, the completion condition, the failure condition, and what triggers recomputation. Do not assume the model will derive an algorithm from prose rules alone. Omit when every rule in this file is a simple, single-step check.}
+
+
 NAMING CONVENTIONS {OPTIONAL}
 {Use only when the output requires deterministically derived names (e.g. test class names from function names). Give the exact derivation rule plus one worked example. A fixed set of allowed values (e.g. a status vocabulary) is not a naming convention — put it in RULES as its own subsection.}
+
+
+INVARIANTS {OPTIONAL}
+{Use for conditions that must always remain true, especially around high-risk failure conditions where conflating two things would let bad output pass silently (e.g., 'entry fidelity does not imply temporal completeness'). State plainly as a standalone fact, not as something the reader must re-derive from other rules.}
+
+
+PASS/FAIL CONDITIONS {OPTIONAL}
+{Use when this file's content gates a mode transition or a go/no-go decision elsewhere in the GPT (e.g. a verification or audit file). State explicitly what must be true before the process may advance, and what happens on each failure mode. Omit for purely descriptive or reference files.}
 
 
 EXPLICIT NON-GOALS {CORE}
@@ -95,7 +115,7 @@ Output when stable:
 
 
 EXAMPLE 1 {OPTIONAL}
-{Include when a worked example would help show what applying this file's content actually looks like — this may be the GPT's internal working (e.g. how it classifies or derives something) rather than only its visible output. Not tied to demonstrating compliance with RULES — some knowledge files (e.g. an extracted REPORTS or INPUTS section) have no RULES to satisfy. One ready-to-copy block illustrating that application. Only variable/identifier names should change when reused. Every value used in the example (e.g. a date, an ID) must be traceable to information stated within that same example — not assumed from outside context — so the derivation is self-contained. Add EXAMPLE 2, EXAMPLE 3, etc. below if more than one distinct example is needed (e.g. one per case this file covers); a single EXAMPLE is sufficient for most files.}
+{Include when a worked example would help show what applying this file's content actually looks like — this may be the GPT's internal working (e.g. how it classifies or derives something) rather than only its visible output. Not tied to demonstrating compliance with RULES — some knowledge files (e.g. an extracted REPORTS or INPUTS section) have no RULES to satisfy. One ready-to-copy block illustrating that application. Only variable/identifier names should change when reused. Every value used in the example (e.g. a date, an ID) must be traceable to information stated within that same example — not assumed from outside context — so the derivation is self-contained. Add EXAMPLE 2, EXAMPLE 3, etc. below if more than one distinct example is needed (e.g. one per case this file covers); a single EXAMPLE is sufficient for most files. Examples are illustrative only: they never define, modify, narrow, expand, or override a RULE, ALGORITHM / REQUIRED CHECK, INVARIANT, or PASS/FAIL CONDITION stated above; if an example ever appears to conflict with one of those, the authoritative statement governs, not the example.}
 
 
 VALIDATION & SELF-CHECKS {CORE}

@@ -20,12 +20,12 @@ SECTION ORDER AND WHY:
   4. PRIMARY OBJECTIVE                           {CORE}     - purpose: the one thing it must produce
   5. INTENDED USAGE CONTEXT                      {CORE}     - context: when to use vs. not
   6. SCOPE OF WORK                               {CORE}     - context: inputs/output, what's in scope
-  7. EXPLICIT NON-GOALS                          {CORE}     - the anti-rules: what it must never do, incl. adjacent tasks
-  8. MODES OF OPERATION                          {CORE}     - control flow: gates whether output is generated, incl. preflight checks
-  9. INPUTS                                      {CORE}     - the requirements: what input is needed
- 10. AMBIGUITY & CLARIFICATION POLICY            {CORE}     - judgment: default assumption under ambiguity
- 11. CONSTRAINTS & INVARIANTS                    {CORE}     - the requirements: hard rules, always true
- 12. DOMAIN DEFINITIONS & CONTROLLED VOCABULARY  {OPTIONAL} - a fixed, closed vocabulary
+  7. TERMS AND DEFINITIONS                       {OPTIONAL} - context: GPT-wide term definitions + closed vocabulary
+  8. EXPLICIT NON-GOALS                          {CORE}     - the anti-rules: what it must never do, incl. adjacent tasks
+  9. MODES OF OPERATION                          {CORE}     - control flow: gates whether output is generated, incl. preflight checks
+ 10. INPUTS                                      {CORE}     - the requirements: what input is needed
+ 11. AMBIGUITY & CLARIFICATION POLICY            {CORE}     - judgment: default assumption under ambiguity
+ 12. CONSTRAINTS & INVARIANTS                    {CORE}     - the requirements: hard rules, always true
  13. OUTPUT CONTRACT                             {CORE}     - the deliverable: header + body structure
  14. REPORTS                                     {OPTIONAL} - the deliverable: downloadable report file spec
  15. OUTPUT FORMATTING RULES                     {CORE}     - presentation: how chat output is formatted
@@ -113,6 +113,10 @@ Output:
 In scope:
 
 
+TERMS AND DEFINITIONS {OPTIONAL}
+{Use when this GPT needs term definitions that apply across the whole GPT — shared by more than one knowledge file, or used within these instructions themselves — and/or a fixed, closed vocabulary (e.g. commit types, cost categories, classification labels). A knowledge file's own TERMS AND DEFINITIONS section covers terms scoped to that one file only; anything broader belongs here instead, and knowledge files should reference this section rather than redefining the term. Define only terms not already obvious from plain English usage. List entries alphabetically, one per line, as "word or phrase: meaning" - for a closed-vocabulary entry, state which values are allowed and when to select each directly in its meaning.}
+
+
 EXPLICIT NON-GOALS {CORE}
 {What the GPT must never do, even if asked. Use "Do NOT ..." form.}
 
@@ -196,14 +200,6 @@ CONSTRAINTS & INVARIANTS {CORE}
 
 - Do not fabricate content.
 - {Add GPT-specific constraints here, e.g. a positively-phrased invariant such as "All figures must trace back to the provided input."}
-
-
-DOMAIN DEFINITIONS & CONTROLLED VOCABULARY {OPTIONAL}
-{Use only if the GPT needs a fixed, closed vocabulary — e.g. commit types, cost categories, classification labels.}
-
-Allowed values:
-
-Selection rules:
 
 
 OUTPUT CONTRACT {CORE}
