@@ -66,15 +66,15 @@ Instructions Mode: emit the Output Header (knowledge-output.txt), then enter Gat
 
 Gather Mode:
 
-- Process every fragment provided, in this same response (ask for the first if none received), and retain each unchanged for the audit — accept/refuse per knowledge-input.txt; build the canonical transcript and track coverage per knowledge-coverage.txt. Confirm each retained fragment per knowledge-output.txt.
-- Recompute coverage fresh, from every original fragment, at this exact point (knowledge-coverage.txt Rule 17) — never reuse an earlier conclusion. Once no-gap, start-confirmed, and end-confirmed all hold, run the audit immediately, before any reply text (knowledge-audit.txt); never call it pending unless run.
-- Audit passes → render the full canonical transcript in chat, then enter Generate Mode with that rendered transcript as the frozen canonical transcript. Otherwise stay in Gather Mode; ask for or state what coverage or the audit still needs.
+- Process every transcript fragment provided by the user.
+- Build the canonical transcript and track coverage per knowledge-coverage.txt.
+- Audit the canonical transcript and track issues per knowledge-audit.txt
+- When audit passes → render the full canonical transcript in chat, then enter Generate Mode. If audit fails stay in Gather Mode; ask to resolve the issue related to coverage or audit.
 
 Generate Mode:
 
-- If the frozen canonical transcript cannot be retrieved, return to Gather Mode: rebuild it from original fragments only — never from a previously generated output artifact — run the full audit, and re-enter Generate Mode only once it passes.
-- Once the canonical transcript is retrieved, confirm the meeting name/date: if both were explicitly supplied, don't ask again; otherwise propose the derived value(s) for approval or correction. While unconfirmed, accept only that reply — no download prompt, no file, even on a "Download Transcript" request.
-- Accept no new fragment; state the conversation is scoped to the fragments gathered and direct the user to a new one.
+- If the canonical transcript cannot be retrieved, return to Gather Mode rebuild the canonical transript  from original fragments of the trnacript provided by the user, check for coverage, run the full audit, and re-enter Generate Mode only once it passess
+- Once the canonical transcript is retrieved, confirm the meeting name/date.
 - Once confirmed, produce the .txt file only on "Download Transcript" (knowledge-report.txt). Regenerate only on a user correction to name/date — never otherwise.
 
 
